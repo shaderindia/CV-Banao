@@ -407,7 +407,7 @@ select {
     margin: 0 auto 12px auto; /* **Optimized: Tighter margin** */
     border: 3px solid var(--primary-color);
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-    display: block;
+    display: block; /* Ensure it's always block to take up space */
 }
 
 /* Resume Section Titles */
@@ -492,11 +492,12 @@ select {
 
 
 /* --- Two-Column Layout (Template) --- */
-.two-column-layout .a4-size {
+.two-column-layout #resume-content { /* Target #resume-content directly for flex */
     display: flex;
     flex-direction: row;
     padding: 0; /* Remove padding here as columns will have their own */
-    height: 100%; /* Ensure columns fill A4 height */
+    height: 100%; /* Ensure it takes full height of A4 container */
+    box-sizing: border-box; /* Include padding/border in element's total width/height */
 }
 
 .two-column-layout .sidebar {
@@ -509,6 +510,7 @@ select {
     align-items: center;
     text-align: center;
     border-right: 1px solid var(--border-color); /* Subtle separator */
+    overflow: hidden; /* Ensure content in sidebar doesn't spill */
 }
 
 .two-column-layout .main-content {
@@ -517,6 +519,7 @@ select {
     box-sizing: border-box;
     display: flex;
     flex-direction: column; /* Ensure sections stack */
+    overflow: hidden; /* Ensure content in main doesn't spill */
 }
 
 .two-column-layout .sidebar .profile-photo-resume {
@@ -554,12 +557,13 @@ select {
     margin-bottom: 3px; /* **Optimized: Tighter spacing** */
 }
 .two-column-layout .sidebar ul {
-    list-style: none;
+    list-style: none; /* No bullets in sidebar for cleaner look */
     padding-left: 0;
     margin-bottom: 6px;
 }
 .two-column-layout .sidebar ul li {
-    margin-bottom: 2px; /* **Optimized: Very tight spacing** */
+    margin-bottom: 2px; /* **Very tight spacing** */
+    text-align: left; /* Align list items left */
 }
 
 .two-column-layout .sidebar .personal-details-block {
@@ -583,10 +587,10 @@ select {
     padding-bottom: 0;
 }
 .two-column-layout .main-content .profile-photo-resume {
-    display: none;
+    display: none; /* Hide in main content if shown in sidebar */
 }
 .two-column-layout .main-content .contact-info {
-    display: none;
+    display: none; /* Hide in main content if shown in sidebar */
 }
 .two-column-layout .main-content .resume-section-title {
     margin-top: 18px; /* **Optimized: Tighter margin** */
@@ -650,53 +654,62 @@ select {
     body {
         margin: 0;
         padding: 0;
-        -webkit-print-color-adjust: exact;
+        -webkit-print-color-adjust: exact; /* Crucial for background colors and images */
         print-color-adjust: exact;
     }
 
-    .container, #resume-form, #resume-output h2, .output-actions, .suggestion-box, .credits {
-        display: none;
+    /* Hide form elements and UI elements */
+    h1, #resume-form, .output-actions, .suggestion-box, .credits {
+        display: none !important;
     }
 
+    /* Keep the container visible, but remove its padding/margin to prevent extra whitespace */
+    .container {
+        margin: 0;
+        padding: 0;
+        box-shadow: none;
+        background: none;
+        max-width: none; /* Allow it to span full width for print */
+    }
+
+    /* Ensure resume output is visible and correctly sized for A4 print */
     #resume-output {
         display: block !important;
         margin: 0;
         padding: 0;
         box-shadow: none;
         background: none;
-        width: auto;
-        height: auto;
+        width: 210mm; /* Ensure it matches A4 width */
+        min-height: 297mm; /* Ensure it matches A4 height */
     }
 
-    .a4-size {
+    /* Critical: Apply A4 dimensions and flex properties directly to #resume-content for print */
+    #resume-content.a4-size { /* Target the combination of ID and class */
         width: 210mm;
-        height: 297mm; /* Ensure fixed height for printing */
+        height: 297mm;
         margin: 0 auto;
-        padding: 18mm; /* Use the optimized padding for print */
+        padding: 0; /* Columns handle their own padding */
         box-shadow: none;
         background: white;
         page-break-after: always;
         overflow: hidden; /* Ensure content doesn't break out of the print page */
+        display: flex; /* Re-apply flex for two-column layout */
+        flex-direction: row; /* Ensure side-by-side */
     }
 
-    /* Important: Ensure print styles correctly apply two-column layout */
-    .two-column-layout #resume-content {
-        display: flex;
-        flex-direction: row;
-        height: 100%;
-        width: 100%; /* Important for print layout */
-    }
-
+    /* Ensure print styles correctly apply two-column layout */
     .two-column-layout .sidebar {
         width: 33%;
-        padding: 18mm 10mm;
-        background-color: var(--background-dark);
+        padding: 18mm 10mm; /* Keep optimized padding */
+        background-color: var(--background-dark); /* Keep sidebar background for print */
         border-right: 1px solid var(--border-color);
+        box-sizing: border-box;
     }
 
     .two-column-layout .main-content {
         width: 67%;
-        padding: 18mm 18mm;
+        padding: 18mm 18mm; /* Keep optimized padding */
+        box-sizing: border-box;
     }
 
     /* Reset any unwanted margins/paddings that might creep in during print */
@@ -734,13 +747,16 @@ select {
         max-width: 200px;
         margin-top: 20px;
     }
+    /* On smaller screens, allow resume to expand vertically, not strictly A4 */
     .a4-size {
         padding: 15mm;
         width: 100%;
-        min-height: auto;
+        height: auto; /* Allow height to adjust on smaller screens */
+        min-height: unset; /* Remove min-height restriction */
     }
-    .two-column-layout .a4-size {
+    .two-column-layout #resume-content { /* Adjust for single column on mobile */
         flex-direction: column;
+        height: auto;
     }
     .two-column-layout .sidebar,
     .two-column-layout .main-content {
