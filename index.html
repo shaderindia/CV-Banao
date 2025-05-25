@@ -71,42 +71,42 @@
             <div class="form-section-group">
                 <div class="section">
                     <h2><i class="fas fa-bullseye"></i> Objective / Summary</h2>
-                    <textarea id="objective" rows="3" placeholder="A concise statement highlighting your career goals, key qualifications, and what you aim to achieve in a new role."></textarea>
+                    <textarea id="objective" rows="4" placeholder="A concise statement highlighting your career goals, key qualifications, and what you aim to achieve in a new role."></textarea>
                 </div>
             </div>
 
             <div class="form-section-group">
                 <div class="section">
                     <h2><i class="fas fa-graduation-cap"></i> Education</h2>
-                    <textarea id="education" rows="4" placeholder="List your degrees, universities, locations, and graduation years.&#10;e.g., M.Sc. Computer Science, University of XYZ, City, 2020&#10;B.Sc. Software Engineering, ABC College, City, 2018"></textarea>
+                    <textarea id="education" rows="4" placeholder="List your degrees, universities, locations, and graduation years, each on a new line.&#10;e.g., M.Sc. Computer Science, University of XYZ, City, 2020&#10;B.Sc. Software Engineering, ABC College, City, 2018"></textarea>
                 </div>
             </div>
 
             <div class="form-section-group">
                 <div class="section">
                     <h2><i class="fas fa-lightbulb"></i> Skills</h2>
-                    <textarea id="skills" rows="4" placeholder="Highlight your most relevant technical and soft skills. Use bullet points or commas.&#10;e.g., - Project Management, Data Analysis, Strategic Planning&#10;- Python, JavaScript, SQL, React, AWS"></textarea>
+                    <textarea id="skills" rows="4" placeholder="Highlight your skills. Use bullet points or commas.&#10;e.g., - Project Management, Data Analysis&#10;- Python, JavaScript, SQL"></textarea>
                 </div>
             </div>
 
             <div class="form-section-group">
                 <div class="section">
                     <h2><i class="fas fa-briefcase"></i> Experience</h2>
-                    <textarea id="experience" rows="6" placeholder="Detail your work history, starting with the most recent.&#10;Job Title, Company, Location, Dates (e.g., Software Engineer, Tech Solutions Inc., New York, 2021 - Present)&#10;- Key responsibilities and measurable achievements in bullet points.&#10;- Used [technology] to achieve [result], resulting in [impact]."></textarea>
+                    <textarea id="experience" rows="6" placeholder="Detail work history, most recent first. Newlines for new roles/bullets.&#10;Software Engineer, Tech Solutions Inc., New York, 2021 - Present&#10;- Key achievement 1&#10;- Key achievement 2"></textarea>
+                </div>
+            </div>
+
+            <div class="form-section-group">
+                <div class="section">
+                    <h2><i class="fas fa-cogs"></i> CAD/CAM Software</h2>
+                    <textarea id="cadcam-software" rows="3" placeholder="List CAD/CAM software you are proficient in.&#10;e.g., AutoCAD, SolidWorks, CATIA, Siemens NX, Fusion 360, Mastercam"></textarea>
                 </div>
             </div>
 
             <div class="form-section-group">
                 <div class="section">
                     <h2><i class="fas fa-language"></i> Languages</h2>
-                    <textarea id="languages" rows="2" placeholder="List languages and your proficiency level.&#10;e.g., English (Fluent), Spanish (Conversational), French (Basic)"></textarea>
-                </div>
-            </div>
-
-            <div class="form-section-group">
-                <div class="section">
-                    <h2><i class="fas fa-desktop"></i> Software / Tools</h2>
-                    <textarea id="software" rows="2" placeholder="Mention relevant software, tools, and platforms you are proficient in.&#10;e.g., Microsoft Office Suite, Adobe Creative Cloud, Salesforce, JIRA, Figma"></textarea>
+                    <textarea id="languages" rows="3" placeholder="List languages and proficiency.&#10;e.g., English (Fluent)&#10;Spanish (Conversational)"></textarea>
                 </div>
             </div>
 
@@ -124,9 +124,11 @@
         </form>
 
         <div id="resume-output" style="display:none;">
-            <h2>Generated Resume Preview</h2>
-            <div id="resume-content" class="a4-size">
-                </div>
+            <h2 class="output-title">Generated Resume Preview</h2>
+            <div id="resume-content-wrapper">
+                <div id="resume-content" class="a4-size">
+                    </div>
+            </div>
             <div class="output-actions">
                 <button onclick="window.print()" class="btn-primary"><i class="fas fa-print"></i> Print Resume</button>
                 <button id="download-pdf" class="btn-primary"><i class="fas fa-file-pdf"></i> Download PDF</button>
@@ -137,11 +139,11 @@
     <div id="suggestion-box" class="suggestion-box" style="display:none;"></div>
 
     <footer class="credits">
-        Built with passion by <a href="https://www.instagram.com/nishix_vamp/" target="_blank">nishix_vamp</a>
+        Built with passion by <a href="https://www.instagram.com/nishix_vamp/" target="_blank" rel="noopener noreferrer">nishix_vamp</a>
     </footer>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
     <script src="script.js"></script>
