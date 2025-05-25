@@ -20,7 +20,7 @@
                         secondary: '#6366F1', // Indigo 500
                         accent: '#818CF8', // Indigo 400
                         light: '#E0E7FF', // Indigo 100
-                        dark: '#1F2937', // Gray 800
+                        dark: '#1F2937', // Gray 800 - Used for general dark text
                     }
                 }
             }
@@ -35,6 +35,9 @@
             font-family: 'Inter', sans-serif;
             background-color: #f3f4f6; /* Light gray background */
             color: #374151; /* Dark gray text */
+            /* Subtle background pattern */
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%239C92AC' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0 20v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zM6 46v-4H4v4H0v2h4v4h2v-4h4v-2H6zm0-20v-4H4v4H0v2h4v4h2v-4h4v-2H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            background-size: 60px 60px;
         }
         .container {
             max-width: 960px;
@@ -102,6 +105,11 @@
             background-color: #F9FAFB; /* Lighter background for sections */
             border-radius: 0.75rem;
             border: 1px solid #E5E7EB; /* Gray 200 */
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+        .form-section-group:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 18px -3px rgba(0, 0, 0, 0.15), 0 6px 9px -2px rgba(0, 0, 0, 0.08);
         }
         .form-header {
             display: flex;
@@ -134,6 +142,11 @@
             cursor: pointer;
             background-color: #F3F4F6;
             position: relative;
+            transition: border-color 0.2s, transform 0.2s;
+        }
+        .photo-preview-box:hover {
+            border-color: #4F46E5;
+            transform: scale(1.05);
         }
         .photo-preview-box img {
             width: 100%;
@@ -149,11 +162,6 @@
             font-size: 2.5rem;
             margin-bottom: 0.5rem;
             display: block;
-        }
-        .personal-details-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.5rem;
         }
         .btn-primary, .btn-secondary {
             padding: 0.75rem 1.5rem;
@@ -227,15 +235,20 @@
             box-sizing: border-box;
             font-size: 0.95rem;
         }
+        /* Updated: Highlight H3 Headlines */
         #resume-content h3 {
             font-family: 'Montserrat', sans-serif;
             font-size: 1.25rem;
             font-weight: 600;
-            color: #1F2937;
+            color: #1F2937; /* Darker text for contrast */
             margin-top: 1.5rem;
-            margin-bottom: 0.5rem;
-            border-bottom: 1px solid #E5E7EB;
-            padding-bottom: 0.25rem;
+            margin-bottom: 1rem; /* More space below */
+            padding: 0.5rem 1rem; /* Padding inside the box */
+            background-color: #E0E7FF; /* Light indigo background */
+            border-radius: 0.5rem; /* Slightly rounded corners */
+            border-bottom: none; /* Remove previous border-bottom */
+            display: block; /* Ensure it takes full width */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* Subtle shadow for depth */
         }
         #resume-content p, #resume-content ul {
             margin-bottom: 0.75rem;
@@ -368,6 +381,41 @@
             100% { transform: rotate(360deg); }
         }
 
+        /* Confetti Container */
+        #confetti-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none; /* Allow clicks to pass through */
+            z-index: 1050; /* Above content, below modals */
+            overflow: hidden;
+        }
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: var(--confetti-color);
+            opacity: 0;
+            animation: confetti-fall 3s forwards;
+        }
+
+        @keyframes confetti-fall {
+            0% {
+                opacity: 0;
+                transform: translateY(-100px) rotateZ(0deg);
+            }
+            10% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(100vh) rotateZ(720deg);
+            }
+        }
+
+
         /* Footer */
         .credits {
             text-align: center;
@@ -410,7 +458,7 @@
                 box-shadow: none;
                 padding: 1cm; /* Standard print margins */
             }
-            .output-actions, .credits, .message-box, .modal {
+            .output-actions, .credits, .message-box, .modal, #confetti-container {
                 display: none !important;
             }
         }
@@ -418,8 +466,8 @@
 </head>
 <body>
     <div class="container">
-        <h1><i class="fas fa-file-alt"></i> Elite Resume Builder</h1>
-        <p class="text-center text-sm text-gray-500 mb-4">Your unique user ID: <span id="user-id-display" class="font-semibold text-primary">Loading...</span></p>
+        <h1><i class="fas fa-file-alt"></i> Elite Resume Builder by Nishikant Xalxo</h1>
+        <p class="text-center text-sm text-gray-500 mb-4">Data is saved in your browser's local storage.</p>
 
         <form id="resume-form" class="space-y-6">
             <div class="form-section-group">
@@ -538,9 +586,11 @@
                     <i class="fas fa-magic"></i> Generate Resume
                 </button>
                 <button type="button" id="save-resume-btn" class="btn-primary">
+                    <span class="spinner"></span>
                     <i class="fas fa-save"></i> Save Resume
                 </button>
                 <button type="button" id="load-resume-btn" class="btn-secondary">
+                    <span class="spinner"></span>
                     <i class="fas fa-folder-open"></i> Load Resume
                 </button>
                 <button type="button" id="reset-form-btn" class="btn-secondary">
@@ -556,7 +606,6 @@
                     </div>
             </div>
             <div class="output-actions">
-                <button onclick="window.print()" class="btn-primary"><i class="fas fa-print"></i> Print Resume</button>
                 <button id="download-pdf" class="btn-primary"><i class="fas fa-file-pdf"></i> Download PDF</button>
             </div>
         </div>
@@ -579,72 +628,17 @@
 
     <div id="message-box" class="message-box hidden"></div>
 
+    <div id="confetti-container"></div>
+
     <footer class="credits">
         Built with passion by <a href="https://www.instagram.com/nishix_vamp/" target="_blank" rel="noopener noreferrer">nishix_vamp</a>
     </footer>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-
-        // Cropper.js and PDF libraries
-        // Note: These are loaded via CDN in the head, but if you prefer modular imports,
-        // you would need to adjust your build process or use direct script tags as done.
-        // For this self-contained example, direct script tags are used in HTML.
-    </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
-    <script type="module">
-        // Firebase global variables (will be initialized by the environment)
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
-        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
-
-        let app;
-        let db;
-        let auth;
-        let userId = 'loading...'; // Default state until auth is ready
-
-        // Initialize Firebase
-        if (Object.keys(firebaseConfig).length > 0) {
-            app = firebase.initializeApp(firebaseConfig);
-            db = firebase.firestore.getFirestore(app);
-            auth = firebase.auth.getAuth(app);
-
-            // Listen for auth state changes
-            firebase.auth.onAuthStateChanged(auth, async (user) => {
-                if (user) {
-                    userId = user.uid;
-                    document.getElementById('user-id-display').textContent = userId;
-                    showMessage('Signed in as ' + userId.substring(0, 8) + '...', 'success');
-                } else {
-                    // Sign in anonymously if no user is authenticated and no custom token is provided
-                    try {
-                        if (initialAuthToken) {
-                            await firebase.auth.signInWithCustomToken(auth, initialAuthToken);
-                        } else {
-                            await firebase.auth.signInAnonymously(auth);
-                        }
-                    } catch (error) {
-                        console.error("Firebase authentication error:", error);
-                        showMessage('Authentication failed: ' + error.message, 'error');
-                        userId = 'anonymous_error';
-                        document.getElementById('user-id-display').textContent = userId;
-                    }
-                }
-            });
-        } else {
-            console.warn("Firebase config not found. Save/Load features will not work.");
-            document.getElementById('user-id-display').textContent = 'Firebase not configured';
-            document.getElementById('save-resume-btn').disabled = true;
-            document.getElementById('load-resume-btn').disabled = true;
-            showMessage('Firebase not configured. Save/Load disabled.', 'error');
-        }
-
-
+    <script>
         // DOM Elements
         const resumeForm = document.getElementById('resume-form');
         const photoInput = document.getElementById('photo');
@@ -663,9 +657,11 @@
         const messageBox = document.getElementById('message-box');
         const saveResumeBtn = document.getElementById('save-resume-btn');
         const loadResumeBtn = document.getElementById('load-resume-btn');
+        const confettiContainer = document.getElementById('confetti-container');
+
 
         let cropper; // Cropper.js instance
-        let croppedImageBlob = null; // To store the cropped image as a Blob
+        let croppedImageBase64 = null; // To store the cropped image as a Base64 string
 
         // --- Utility Functions ---
 
@@ -690,14 +686,41 @@
          * @param {boolean} isLoading - True to show loading, false to hide.
          */
         function toggleLoading(button, isLoading) {
+            const spinnerElement = button.querySelector('.spinner');
             if (isLoading) {
                 button.classList.add('loading');
                 button.disabled = true;
-                button.querySelector('.spinner').style.display = 'inline-block';
+                if (spinnerElement) {
+                    spinnerElement.style.display = 'inline-block';
+                }
             } else {
                 button.classList.remove('loading');
                 button.disabled = false;
-                button.querySelector('.spinner').style.display = 'none';
+                if (spinnerElement) {
+                    spinnerElement.style.display = 'none';
+                }
+            }
+        }
+
+        /**
+         * Triggers a confetti animation.
+         */
+        function launchConfetti() {
+            const colors = ['#f44336', '#e91e63', '#9c27b0', '#673ab7', '#3f51b5', '#2196f3', '#03a9f4', '#00bcd4', '#009688', '#4CAF50', '#8BC34A', '#CDDC39', '#FFEB3B', '#FFC107', '#FF9800', '#FF5722', '#795548', '#9E9E9E', '#607D8B'];
+            const numConfetti = 50; // Number of confetti pieces
+
+            for (let i = 0; i < numConfetti; i++) {
+                const confetti = document.createElement('div');
+                confetti.classList.add('confetti');
+                confetti.style.setProperty('--confetti-color', colors[Math.floor(Math.random() * colors.length)]);
+                confetti.style.left = `${Math.random() * 100}vw`;
+                confetti.style.animationDelay = `${Math.random() * 0.5}s`; // Stagger animation
+                confettiContainer.appendChild(confetti);
+
+                // Remove confetti after animation to prevent DOM clutter
+                confetti.addEventListener('animationend', () => {
+                    confetti.remove();
+                });
             }
         }
 
@@ -743,24 +766,21 @@
 
         confirmCropBtn.addEventListener('click', () => {
             if (cropper) {
-                // Get cropped canvas as a Blob
-                cropper.getCroppedCanvas({
+                // Get cropped canvas as a Data URL (Base64 string)
+                croppedImageBase64 = cropper.getCroppedCanvas({
                     width: 250, // Desired width for the cropped image
                     height: 250, // Desired height for the cropped image
                     fillColor: '#fff' // Background color for transparent areas
-                }).toBlob((blob) => {
-                    croppedImageBlob = blob;
-                    const imageUrl = URL.createObjectURL(blob);
+                }).toDataURL('image/png'); // Use PNG for better quality with transparency
 
-                    // Update the preview box
-                    imageToCropPreview.src = imageUrl;
-                    imageToCropPreview.classList.remove('hidden');
-                    photoPlaceholder.classList.add('hidden');
+                // Update the preview box
+                imageToCropPreview.src = croppedImageBase64;
+                imageToCropPreview.classList.remove('hidden');
+                photoPlaceholder.classList.add('hidden');
 
-                    cropModal.classList.add('hidden');
-                    cropper.destroy(); // Clean up cropper instance
-                    showMessage('Photo cropped successfully!', 'success');
-                }, 'image/png'); // Use PNG for better quality with transparency
+                cropModal.classList.add('hidden');
+                cropper.destroy(); // Clean up cropper instance
+                showMessage('Photo cropped successfully!', 'success');
             } else {
                 showMessage('No image to crop.', 'error');
             }
@@ -798,7 +818,7 @@
             let resumeHtml = `
                 <div class="flex flex-col md:flex-row items-center md:items-start gap-6 mb-8 p-4 bg-light rounded-lg">
                     <div class="w-32 h-32 rounded-full overflow-hidden border-4 border-primary shadow-lg flex-shrink-0">
-                        ${croppedImageBlob ? `<img src="${URL.createObjectURL(croppedImageBlob)}" alt="Profile Photo" class="w-full h-full object-cover">` : `<div class="w-full h-full bg-gray-300 flex items-center justify-center text-gray-600 text-5xl"><i class="fas fa-user-circle"></i></div>`}
+                        ${croppedImageBase64 ? `<img src="${croppedImageBase64}" alt="Profile Photo" class="w-full h-full object-cover">` : `<div class="w-full h-full bg-gray-300 flex items-center justify-center text-gray-600 text-5xl"><i class="fas fa-user-circle"></i></div>`}
                     </div>
                     <div class="text-center md:text-left flex-grow">
                         <h1 class="text-4xl font-bold text-primary mb-1">${fullName}</h1>
@@ -832,22 +852,30 @@
 
                     <div class="md:col-span-1">
                         <h3>Personal Details</h3>
-                        <p><strong>Marital Status:</strong> ${maritalStatus}</p>
-                        <p><strong>Date of Birth:</strong> ${birthDate}</p>
-                        <p><strong>Gender:</strong> ${gender}</p>
+                        <div class="text-sm space-y-1 mb-4">
+                            <p><strong>Marital Status:</strong> ${maritalStatus}</p>
+                            <p><strong>Date of Birth:</strong> ${birthDate}</p>
+                            <p><strong>Gender:</strong> ${gender}</p>
+                        </div>
 
                         <h3>Skills</h3>
-                        <p>${skills.split('\n').map(skillGroup => `
-                            <span class="inline-block bg-light text-primary text-xs font-semibold px-2.5 py-0.5 rounded-full mr-2 mb-2">${skillGroup.replace(/^- /, '')}</span>
-                        `).join('')}</p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            ${skills.split('\n').map(skillGroup => `
+                                <span class="inline-block bg-light text-dark text-xs font-semibold px-2.5 py-0.5 rounded-full">${skillGroup.replace(/^- /, '').trim()}</span>
+                            `).join('')}
+                        </div>
 
                         <h3>CAD/CAM Software</h3>
-                        <p>${cadcamSoftware.split(',').map(software => `
-                            <span class="inline-block bg-light text-primary text-xs font-semibold px-2.5 py-0.5 rounded-full mr-2 mb-2">${software.trim()}</span>
-                        `).join('')}</p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            ${cadcamSoftware.split(',').map(software => `
+                                <span class="inline-block bg-light text-dark text-xs font-semibold px-2.5 py-0.5 rounded-full">${software.trim()}</span>
+                            `).join('')}
+                        </div>
 
                         <h3>Languages</h3>
-                        <p>${languages.replace(/\n/g, '<br>')}</p>
+                        <div class="text-sm space-y-1 mb-4">
+                            ${languages.split('\n').map(lang => `<p>${lang.trim()}</p>`).join('')}
+                        </div>
                     </div>
                 </div>
 
@@ -862,13 +890,14 @@
             resumeForm.classList.add('hidden');
             toggleLoading(generateResumeBtn, false);
             showMessage('Resume generated successfully!', 'success');
+            launchConfetti(); // Launch confetti on successful generation
         });
 
         // --- Reset Form ---
 
         resetFormBtn.addEventListener('click', () => {
             resumeForm.reset();
-            croppedImageBlob = null;
+            croppedImageBase64 = null;
             imageToCropPreview.src = '';
             imageToCropPreview.classList.add('hidden');
             photoPlaceholder.classList.remove('hidden');
@@ -887,38 +916,87 @@
             const element = document.getElementById('resume-content');
             const pdf = new jspdf.jsPDF('p', 'mm', 'a4'); // 'p' for portrait, 'mm' for millimeters, 'a4' for A4 size
 
-            // Calculate scale to fit A4 width
-            const scale = (pdf.internal.pageSize.getWidth() - 20) / element.offsetWidth; // -20 for 10mm margin on each side
+            // Temporarily apply styles to ensure accurate measurement for html2canvas
+            // Save original styles to revert later
+            const originalStyles = {
+                display: element.style.display,
+                position: element.style.position,
+                width: element.style.width,
+                height: element.style.height,
+                padding: element.style.padding,
+                boxSizing: element.style.boxSizing,
+                overflow: element.style.overflow
+            };
+
+            element.style.display = 'block';
+            element.style.position = 'absolute';
+            element.style.width = '210mm'; // Set to A4 width for consistent rendering
+            element.style.height = 'auto'; // Let content determine height
+            element.style.padding = '1cm'; // Match print media query padding
+            element.style.boxSizing = 'border-box';
+            element.style.overflow = 'hidden';
+
+            // Revert original styles immediately (important!)
+            // This needs to happen before html2canvas to avoid layout shifts affecting the screenshot
+            // but after we've read the initial dimensions.
+            // For now, let's keep it here and see if it causes issues.
+            // A safer approach might be to clone the element, style the clone, render the clone, then delete the clone.
+            // But for simplicity and common usage, this pattern is often used.
+            const contentWidthPx = element.offsetWidth;
+            const contentHeightPx = element.offsetHeight;
+
+            for (const prop in originalStyles) {
+                element.style[prop] = originalStyles[prop];
+            }
+
+            const pdfWidthMm = pdf.internal.pageSize.getWidth();
+            const pdfHeightMm = pdf.internal.pageSize.getHeight();
+            const marginMm = 10;
+
+            const printableWidthMm = pdfWidthMm - (2 * marginMm);
+            const printableHeightMm = pdfHeightMm - (2 * marginMm);
+
+            // Use a high fixed scale for html2canvas to ensure high quality.
+            // This creates a large canvas image.
+            const html2canvasFixedScale = 4; // Experiment with 3, 4, 5 for best balance of quality/file size
 
             html2canvas(element, {
-                scale: scale, // Apply calculated scale
-                useCORS: true, // Important for images, especially if loaded from Blob URLs
-                logging: false, // Disable logging for cleaner console
+                scale: html2canvasFixedScale,
+                useCORS: true,
+                logging: false,
                 allowTaint: true,
                 removeContainer: true,
-                windowWidth: element.scrollWidth,
-                windowHeight: element.scrollHeight
             }).then(canvas => {
                 const imgData = canvas.toDataURL('image/png');
-                const imgWidth = pdf.internal.pageSize.getWidth();
-                const pageHeight = pdf.internal.pageSize.getHeight();
-                const imgHeight = canvas.height * imgWidth / canvas.width;
-                let heightLeft = imgHeight;
-                let position = 0;
+                const imgProps = pdf.getImageProperties(imgData); // This gives original pixel dimensions of the canvas
 
-                pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-                heightLeft -= pageHeight;
+                // Calculate the aspect ratio of the generated image
+                const aspectRatio = imgProps.width / imgProps.height;
 
-                while (heightLeft >= 0) {
-                    position = heightLeft - imgHeight;
-                    pdf.addPage();
-                    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-                    heightLeft -= pageHeight;
+                // Determine the dimensions to fit the image into the printable area while preserving aspect ratio
+                let imgWidthPdf;
+                let imgHeightPdf;
+
+                // Option 1: Fit to width, then check height
+                imgWidthPdf = printableWidthMm;
+                imgHeightPdf = imgWidthPdf / aspectRatio;
+
+                if (imgHeightPdf > printableHeightMm) {
+                    // If fitting to width makes it too tall, then fit to height
+                    imgHeightPdf = printableHeightMm;
+                    imgWidthPdf = imgHeightPdf * aspectRatio;
                 }
+
+                // Center the image within the printable area
+                const xOffset = marginMm + (printableWidthMm - imgWidthPdf) / 2;
+                const yOffset = marginMm + (printableHeightMm - imgHeightPdf) / 2;
+
+                pdf.addImage(imgData, 'PNG', xOffset, yOffset, imgWidthPdf, imgHeightPdf);
 
                 pdf.save('elite-resume.pdf');
                 toggleLoading(downloadPdfBtn, false);
                 showMessage('Resume downloaded as PDF!', 'success');
+                launchConfetti();
             }).catch(error => {
                 console.error("Error generating PDF:", error);
                 showMessage('Failed to download PDF. Please try again.', 'error');
@@ -926,13 +1004,11 @@
             });
         });
 
-        // --- Firebase Save/Load ---
+        // --- Local Storage Save/Load ---
 
-        saveResumeBtn.addEventListener('click', async () => {
-            if (!db || !userId || userId === 'loading...' || userId === 'anonymous_error') {
-                showMessage('Firebase not ready or user not authenticated. Cannot save.', 'error');
-                return;
-            }
+        const LOCAL_STORAGE_KEY = 'eliteResumeData';
+
+        saveResumeBtn.addEventListener('click', () => {
             toggleLoading(saveResumeBtn, true);
             try {
                 const resumeData = {
@@ -951,35 +1027,26 @@
                     cadcamSoftware: document.getElementById('cadcam-software').value,
                     languages: document.getElementById('languages').value,
                     declaration: document.getElementById('declaration').value,
-                    // Convert Blob to Base64 string for storage
-                    photo: croppedImageBlob ? await blobToBase64(croppedImageBlob) : null,
-                    timestamp: firebase.firestore.Timestamp.now()
+                    photo: croppedImageBase64 // Store Base64 string directly
                 };
 
-                // Use the user's ID to store their private resume data
-                const userResumeDocRef = firebase.firestore.doc(db, `artifacts/${appId}/users/${userId}/resumes/myResume`);
-                await firebase.firestore.setDoc(userResumeDocRef, resumeData);
-                showMessage('Resume data saved successfully!', 'success');
+                localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(resumeData));
+                showMessage('Resume data saved to local storage!', 'success');
             } catch (error) {
-                console.error("Error saving resume data:", error);
+                console.error("Error saving resume data to local storage:", error);
                 showMessage('Failed to save resume data: ' + error.message, 'error');
             } finally {
                 toggleLoading(saveResumeBtn, false);
             }
         });
 
-        loadResumeBtn.addEventListener('click', async () => {
-            if (!db || !userId || userId === 'loading...' || userId === 'anonymous_error') {
-                showMessage('Firebase not ready or user not authenticated. Cannot load.', 'error');
-                return;
-            }
+        loadResumeBtn.addEventListener('click', () => {
             toggleLoading(loadResumeBtn, true);
             try {
-                const userResumeDocRef = firebase.firestore.doc(db, `artifacts/${appId}/users/${userId}/resumes/myResume`);
-                const docSnap = await firebase.firestore.getDoc(userResumeDocRef);
+                const storedData = localStorage.getItem(LOCAL_STORAGE_KEY);
 
-                if (docSnap.exists()) {
-                    const data = docSnap.data();
+                if (storedData) {
+                    const data = JSON.parse(storedData);
                     document.getElementById('full-name').value = data.fullName || '';
                     document.getElementById('designation').value = data.designation || '';
                     document.getElementById('email').value = data.email || '';
@@ -997,58 +1064,64 @@
                     document.getElementById('declaration').value = data.declaration || '';
 
                     if (data.photo) {
-                        // Convert Base64 string back to Blob and set preview
-                        croppedImageBlob = base64ToBlob(data.photo, 'image/png');
-                        imageToCropPreview.src = URL.createObjectURL(croppedImageBlob);
+                        croppedImageBase64 = data.photo;
+                        imageToCropPreview.src = croppedImageBase64;
                         imageToCropPreview.classList.remove('hidden');
                         photoPlaceholder.classList.add('hidden');
                     } else {
-                        croppedImageBlob = null;
+                        croppedImageBase64 = null;
                         imageToCropPreview.src = '';
                         imageToCropPreview.classList.add('hidden');
                         photoPlaceholder.classList.remove('hidden');
                     }
-                    showMessage('Resume data loaded successfully!', 'success');
+                    showMessage('Resume data loaded from local storage!', 'success');
                 } else {
-                    showMessage('No saved resume data found for this user.', 'info');
+                    showMessage('No saved resume data found in local storage.', 'info');
                 }
             } catch (error) {
-                console.error("Error loading resume data:", error);
+                console.error("Error loading resume data from local storage:", error);
                 showMessage('Failed to load resume data: ' + error.message, 'error');
             } finally {
                 toggleLoading(loadResumeBtn, false);
             }
         });
 
-        /**
-         * Converts a Blob to a Base64 string.
-         * @param {Blob} blob
-         * @returns {Promise<string>}
-         */
-        function blobToBase64(blob) {
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.onloadend = () => resolve(reader.result);
-                reader.onerror = reject;
-                reader.readAsDataURL(blob);
-            });
-        }
+        // Optional: Load data on page load for convenience
+        document.addEventListener('DOMContentLoaded', () => {
+            try {
+                const storedData = localStorage.getItem(LOCAL_STORAGE_KEY);
+                if (storedData) {
+                    const data = JSON.parse(storedData);
+                    // Only populate fields if data exists
+                    document.getElementById('full-name').value = data.fullName || '';
+                    document.getElementById('designation').value = data.designation || '';
+                    document.getElementById('email').value = data.email || '';
+                    document.getElementById('phone').value = data.phone || '';
+                    document.getElementById('address').value = data.address || '';
+                    document.getElementById('marital-status').value = data.maritalStatus || '';
+                    document.getElementById('birth-date').value = data.birthDate || '';
+                    document.getElementById('gender').value = data.gender || '';
+                    document.getElementById('objective').value = data.objective || '';
+                    document.getElementById('education').value = data.education || '';
+                    document.getElementById('skills').value = data.skills || '';
+                    document.getElementById('experience').value = data.experience || '';
+                    document.getElementById('cadcam-software').value = data.cadcamSoftware || '';
+                    document.getElementById('languages').value = data.languages || '';
+                    document.getElementById('declaration').value = data.declaration || '';
 
-        /**
-         * Converts a Base64 string to a Blob.
-         * @param {string} base64 - Base64 string (e.g., "data:image/png;base64,iVBORw...").
-         * @param {string} mimeType - The MIME type of the data (e.g., "image/png").
-         * @returns {Blob}
-         */
-        function base64ToBlob(base64, mimeType) {
-            const byteString = atob(base64.split(',')[1]);
-            const ab = new ArrayBuffer(byteString.length);
-            const ia = new Uint8Array(ab);
-            for (let i = 0; i < byteString.length; i++) {
-                ia[i] = byteString.charCodeAt(i);
+                    if (data.photo) {
+                        croppedImageBase64 = data.photo;
+                        imageToCropPreview.src = croppedImageBase64;
+                        imageToCropPreview.classList.remove('hidden');
+                        photoPlaceholder.classList.add('hidden');
+                    }
+                    showMessage('Loaded previous data from local storage!', 'info');
+                }
+            } catch (error) {
+                console.warn("Could not load data from local storage on startup:", error);
+                localStorage.removeItem(LOCAL_STORAGE_KEY); // Clear potentially corrupted data
             }
-            return new Blob([ab], { type: mimeType });
-        }
+        });
     </script>
 </body>
 </html>
