@@ -3,97 +3,123 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Advanced Resume Builder</title>
+    <title>Elite Resume Builder</title>
 
     <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Montserrat:wght@500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="style.css" />
 </head>
 <body>
     <div class="container">
-        <h1>Professional Resume Builder</h1>
+        <h1><i class="fas fa-file-alt"></i> Elite Resume Builder</h1>
         <form id="resume-form">
             <div class="form-section-group">
                 <div class="form-header">
-                    <div>
-                        <label for="name-designation">Full Name and Designation:</label>
-                        <input type="text" id="name-designation" required placeholder="e.g., Jane Doe - Senior Marketing Manager">
-
-                        <label for="email">Email:</label>
-                        <input type="email" id="email" required placeholder="your.email@example.com">
-
-                        <label for="phone">Phone:</label>
-                        <input type="text" id="phone" required placeholder="+123 456 7890">
-
-                        <label for="address">Address:</label>
-                        <input type="text" id="address" required placeholder="123 Main St, Anytown, USA">
+                    <div class="personal-contact-info">
+                        <label for="full-name">Full Name:<input type="text" id="full-name" required placeholder="e.g., Jane Doe"></label>
+                        <label for="designation">Designation:<input type="text" id="designation" required placeholder="e.g., Senior Marketing Manager"></label>
+                        <label for="email">Email:<input type="email" id="email" required placeholder="your.email@example.com"></label>
+                        <label for="phone">Phone:<input type="text" id="phone" required placeholder="+123 456 7890"></label>
+                        <label for="address">Address:<input type="text" id="address" required placeholder="123 Main St, Anytown, USA"></label>
                     </div>
                     <div class="photo-upload-area">
                         <label for="photo">Profile Photo:</label>
                         <input type="file" id="photo" accept="image/*">
                         <div class="photo-preview-box" id="photo-preview-box">
-                            <img id="imageToCrop" style="display: none;">
-                            <p id="photo-placeholder">Click to upload photo</p>
+                            <img id="imageToCrop" style="display: none;" alt="Profile Preview">
+                            <p id="photo-placeholder"><i class="fas fa-camera"></i> Click to upload photo</p>
                         </div>
-                        <button type="button" id="crop-button" class="btn-secondary" style="display: none;">Crop Image</button>
+                        <button type="button" id="crop-button" class="btn-secondary" style="display: none;"><i class="fas fa-crop"></i> Crop Image</button>
                     </div>
                 </div>
             </div>
 
             <div class="form-section-group">
                 <div class="section">
-                    <h2>Objective / Summary</h2>
-                    <textarea id="objective" rows="3" placeholder="A concise statement highlighting your career goals and qualifications."></textarea>
+                    <h2><i class="fas fa-user-circle"></i> Personal Details</h2>
+                    <div class="personal-details-grid">
+                        <label for="marital-status">Marital Status:
+                            <select id="marital-status">
+                                <option value="">Select...</option>
+                                <option value="Single">Single</option>
+                                <option value="Married">Married</option>
+                                <option value="Divorced">Divorced</option>
+                                <option value="Widowed">Widowed</option>
+                                <option value="Prefer not to say">Prefer not to say</option>
+                            </select>
+                        </label>
+
+                        <label for="birth-date">Date of Birth:
+                            <input type="date" id="birth-date">
+                        </label>
+
+                        <label for="gender">Gender:
+                            <select id="gender">
+                                <option value="">Select...</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Non-binary">Non-binary</option>
+                                <option value="Prefer not to say">Prefer not to say</option>
+                            </select>
+                        </label>
+                    </div>
                 </div>
             </div>
 
             <div class="form-section-group">
                 <div class="section">
-                    <h2>Education</h2>
-                    <textarea id="education" rows="4" placeholder="Degree, University, Location, Graduation Year (e.g., M.Sc. Computer Science, University of XYZ, City, 2020)"></textarea>
+                    <h2><i class="fas fa-bullseye"></i> Objective / Summary</h2>
+                    <textarea id="objective" rows="3" placeholder="A concise statement highlighting your career goals, key qualifications, and what you aim to achieve in a new role."></textarea>
                 </div>
             </div>
 
             <div class="form-section-group">
                 <div class="section">
-                    <h2>Skills</h2>
-                    <textarea id="skills" rows="4" placeholder="List your technical and soft skills, separated by commas or bullet points."></textarea>
+                    <h2><i class="fas fa-graduation-cap"></i> Education</h2>
+                    <textarea id="education" rows="4" placeholder="List your degrees, universities, locations, and graduation years.&#10;e.g., M.Sc. Computer Science, University of XYZ, City, 2020&#10;B.Sc. Software Engineering, ABC College, City, 2018"></textarea>
                 </div>
             </div>
 
             <div class="form-section-group">
                 <div class="section">
-                    <h2>Experience</h2>
-                    <textarea id="experience" rows="6" placeholder="Job Title, Company, Location, Dates (e.g., Software Engineer, Tech Solutions Inc., New York, 2021 - Present)&#10;- Key responsibilities and achievements in bullet points."></textarea>
+                    <h2><i class="fas fa-lightbulb"></i> Skills</h2>
+                    <textarea id="skills" rows="4" placeholder="Highlight your most relevant technical and soft skills. Use bullet points or commas.&#10;e.g., - Project Management, Data Analysis, Strategic Planning&#10;- Python, JavaScript, SQL, React, AWS"></textarea>
                 </div>
             </div>
 
             <div class="form-section-group">
                 <div class="section">
-                    <h2>Languages</h2>
-                    <textarea id="languages" rows="2" placeholder="e.g., English (Fluent), Spanish (Conversational)"></textarea>
+                    <h2><i class="fas fa-briefcase"></i> Experience</h2>
+                    <textarea id="experience" rows="6" placeholder="Detail your work history, starting with the most recent.&#10;Job Title, Company, Location, Dates (e.g., Software Engineer, Tech Solutions Inc., New York, 2021 - Present)&#10;- Key responsibilities and measurable achievements in bullet points.&#10;- Used [technology] to achieve [result], resulting in [impact]."></textarea>
                 </div>
             </div>
 
             <div class="form-section-group">
                 <div class="section">
-                    <h2>Software / Tools</h2>
-                    <textarea id="software" rows="2" placeholder="e.g., Microsoft Office Suite, Adobe Creative Cloud, Salesforce"></textarea>
+                    <h2><i class="fas fa-language"></i> Languages</h2>
+                    <textarea id="languages" rows="2" placeholder="List languages and your proficiency level.&#10;e.g., English (Fluent), Spanish (Conversational), French (Basic)"></textarea>
+                </div>
+            </div>
+
+            <div class="form-section-group">
+                <div class="section">
+                    <h2><i class="fas fa-desktop"></i> Software / Tools</h2>
+                    <textarea id="software" rows="2" placeholder="Mention relevant software, tools, and platforms you are proficient in.&#10;e.g., Microsoft Office Suite, Adobe Creative Cloud, Salesforce, JIRA, Figma"></textarea>
                 </div>
             </div>
 
             <div class="form-section-group">
                 <div class="section declaration">
-                    <h2>Declaration</h2>
+                    <h2><i class="fas fa-scroll"></i> Declaration</h2>
                     <textarea id="declaration" rows="3">I hereby declare that the information provided is true and correct to the best of my knowledge.</textarea>
                 </div>
             </div>
 
             <div class="form-actions">
-                <button type="submit" class="btn-primary">Generate Resume</button>
-                <button type="button" id="reset-form-btn" class="btn-secondary">Reset Form</button>
+                <button type="submit" class="btn-primary"><i class="fas fa-magic"></i> Generate Resume</button>
+                <button type="button" id="reset-form-btn" class="btn-secondary"><i class="fas fa-redo-alt"></i> Reset Form</button>
             </div>
         </form>
 
@@ -107,6 +133,12 @@
             </div>
         </div>
     </div>
+
+    <div id="suggestion-box" class="suggestion-box" style="display:none;"></div>
+
+    <footer class="credits">
+        Built with passion by <a href="https://www.instagram.com/nishix_vamp/" target="_blank">nishix_vamp</a>
+    </footer>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
