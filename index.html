@@ -466,7 +466,7 @@
 </head>
 <body>
     <div class="container">
-        <h1><i class="fas fa-file-alt"></i> Elite Resume Builder by Nishikant Xalxo</h1>
+        <h1><i class="fas fa-file-alt"></i> Elite Resume Builder by <a href="https://www.instagram.com/nishix_vamp/" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">Nishikant Xalxo</a></h1>
         <p class="text-center text-sm text-gray-500 mb-4">Data is saved in your browser's local storage.</p>
 
         <form id="resume-form" class="space-y-6">
@@ -596,6 +596,9 @@
                 <button type="button" id="reset-form-btn" class="btn-secondary">
                     <i class="fas fa-redo-alt"></i> Reset Form
                 </button>
+                <button type="button" id="share-app-btn" class="btn-secondary">
+                    <i class="fas fa-share-alt"></i> Share App
+                </button>
             </div>
         </form>
 
@@ -658,6 +661,7 @@
         const saveResumeBtn = document.getElementById('save-resume-btn');
         const loadResumeBtn = document.getElementById('load-resume-btn');
         const confettiContainer = document.getElementById('confetti-container');
+        const shareAppBtn = document.getElementById('share-app-btn'); // New share button
 
 
         let cropper; // Cropper.js instance
@@ -821,7 +825,7 @@
                         ${croppedImageBase64 ? `<img src="${croppedImageBase64}" alt="Profile Photo" class="w-full h-full object-cover">` : `<div class="w-full h-full bg-gray-300 flex items-center justify-center text-gray-600 text-5xl"><i class="fas fa-user-circle"></i></div>`}
                     </div>
                     <div class="text-center md:text-left flex-grow">
-                        <h1 class="text-4xl font-bold text-primary mb-1">${fullName}</h1>
+                        <h1 class="text-4xl font-bold text-dark mb-1">${fullName}</h1>
                         <p class="text-xl font-semibold text-dark mb-2">${designation}</p>
                         <div class="flex flex-wrap justify-center md:justify-start gap-x-4 text-gray-700 text-sm">
                             <p><i class="fas fa-envelope mr-1"></i> ${email}</p>
@@ -860,21 +864,21 @@
 
                         <h3>Skills</h3>
                         <div class="flex flex-wrap gap-2 mb-4">
-                            ${skills.split('\n').map(skillGroup => `
-                                <span class="inline-block bg-light text-dark text-xs font-semibold px-2.5 py-0.5 rounded-full">${skillGroup.replace(/^- /, '').trim()}</span>
-                            `).join('')}
+                            ${skills.split('\n').filter(s => s.trim() !== '').map(skillGroup => `
+                                <span class="text-dark text-xs font-semibold">${skillGroup.replace(/^- /, '').trim()}</span>
+                            `).join(', ')}
                         </div>
 
                         <h3>CAD/CAM Software</h3>
                         <div class="flex flex-wrap gap-2 mb-4">
-                            ${cadcamSoftware.split(',').map(software => `
-                                <span class="inline-block bg-light text-dark text-xs font-semibold px-2.5 py-0.5 rounded-full">${software.trim()}</span>
-                            `).join('')}
+                            ${cadcamSoftware.split(',').filter(s => s.trim() !== '').map(software => `
+                                <span class="text-dark text-xs font-semibold">${software.trim()}</span>
+                            `).join(', ')}
                         </div>
 
                         <h3>Languages</h3>
                         <div class="text-sm space-y-1 mb-4">
-                            ${languages.split('\n').map(lang => `<p>${lang.trim()}</p>`).join('')}
+                            ${languages.split('\n').filter(s => s.trim() !== '').map(lang => `<p>${lang.trim()}</p>`).join('')}
                         </div>
                     </div>
                 </div>
@@ -1120,6 +1124,27 @@
             } catch (error) {
                 console.warn("Could not load data from local storage on startup:", error);
                 localStorage.removeItem(LOCAL_STORAGE_KEY); // Clear potentially corrupted data
+            }
+        });
+
+        // --- Share App Logic ---
+        shareAppBtn.addEventListener('click', () => {
+            // Get the current URL
+            const appUrl = window.location.href;
+
+            // Use document.execCommand('copy') for better compatibility in iframes
+            const tempInput = document.createElement('textarea');
+            tempInput.value = appUrl;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            try {
+                document.execCommand('copy');
+                showMessage('App link copied to clipboard!', 'success');
+            } catch (err) {
+                console.error('Failed to copy text: ', err);
+                showMessage('Failed to copy link. Please copy manually: ' + appUrl, 'error');
+            } finally {
+                document.body.removeChild(tempInput);
             }
         });
     </script>
