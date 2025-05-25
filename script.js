@@ -27,9 +27,9 @@ document.addEventListener('DOMContentLoaded', () => {
         'objective': 'A brief, impactful summary of your career goals and what you bring to a role. Keep it concise (2-3 sentences).',
         'education': 'List degrees, universities, locations, and graduation dates. Start with your most recent education.',
         'skills': 'Highlight technical skills (programming languages, software) and soft skills (communication, leadership). Use bullet points or commas.',
-        'experience': 'Detail your work history. For each role: Job Title, Company, Location, Dates. Use action verbs and quantifiable achievements in bullet points.',
-        'languages': 'List languages you speak and your proficiency level (e.g., Fluent, Conversational, Basic).',
-        'software': 'Mention relevant software, tools, and platforms you are proficient in.',
+        'experience': 'Detail your work history. For each role: Job Title, Company, Location, Dates (e.g., Software Engineer, Tech Solutions Inc., New York, 2021 - Present). Use action verbs and quantifiable achievements in bullet points.&#10;e.g., - Managed projects, leading to a 15% increase in efficiency.&#10;- Developed new features using [technology], improving user engagement by 20%.',
+        'languages': 'List languages you speak and your proficiency level (e.g., English (Fluent), Spanish (Conversational), French (Basic)).',
+        'software': 'Mention relevant software, tools, and platforms you are proficient in.&#10;e.g., Microsoft Office Suite, Adobe Creative Cloud, Salesforce, JIRA, Figma.',
         'declaration': 'A standard declaration statement. You can leave the default or customize it.'
     };
 
@@ -39,7 +39,8 @@ document.addEventListener('DOMContentLoaded', () => {
         element.addEventListener('focus', () => {
             const suggestionText = suggestions[element.id];
             if (suggestionText) {
-                suggestionBox.innerHTML = suggestionText;
+                // Replace newline characters with <br> for HTML display in the suggestion box
+                suggestionBox.innerHTML = suggestionText.replace(/\n/g, '<br>');
                 suggestionBox.classList.add('show');
 
                 // Position the suggestion box
@@ -54,8 +55,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Adjust if it goes off screen to the right
                 const viewportWidth = window.innerWidth;
                 const suggestionBoxWidth = suggestionBox.offsetWidth;
-                if (rect.left + suggestionBoxWidth > viewportWidth - 20) { // 20px margin from right
+                // Get element's right edge relative to viewport
+                const elementRightEdge = rect.right;
+                if (elementRightEdge + suggestionBoxWidth > viewportWidth - 20) { // 20px margin from right
                     suggestionBox.style.left = 'auto';
+                    // Calculate right position relative to the form container's right edge
                     suggestionBox.style.right = `${containerRect.right - rect.right}px`;
                 }
             }
@@ -173,7 +177,8 @@ document.addEventListener('DOMContentLoaded', () => {
             // If it contains bullet points or multiple lines, format as unordered list
             const hasBulletPoints = lines.some(line => line.trim().startsWith('-'));
             if (hasBulletPoints || lines.length > 1) {
-                return `<ul>${lines.map(line => `<li>${line.startsWith('- ') ? line.substring(2).trim() : line.trim()}</li>`).join('')}</ul>`;
+                // Ensure bullet points are handled correctly for display
+                return `<ul>${lines.map(line => `<li>${line.replace(/^- /, '').trim()}</li>`).join('')}</ul>`;
             }
             // Otherwise, format as a single paragraph
             return `<p>${lines[0].trim()}</p>`;
