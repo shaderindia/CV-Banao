@@ -9,9 +9,62 @@ document.addEventListener('DOMContentLoaded', () => {
     const resumeContent = document.getElementById('resume-content');
     const downloadPdfBtn = document.getElementById('download-pdf');
     const resetFormBtn = document.getElementById('reset-form-btn');
+    const suggestionBox = document.getElementById('suggestion-box');
 
     let cropper; // Cropper.js instance
     let croppedPhotoDataUrl = ''; // Stores the data URL of the cropped image
+
+    // --- Suggestion Data Map ---
+    const suggestions = {
+        'full-name': 'Enter your full legal name.',
+        'designation': 'Your current or target job title (e.g., Software Engineer, Marketing Manager).',
+        'email': 'Your professional email address.',
+        'phone': 'Your contact phone number, including country code.',
+        'address': 'Your city and state/country (full address usually not needed).',
+        'marital-status': 'Select your marital status (optional for most resumes).',
+        'birth-date': 'Your date of birth (optional, consider privacy).',
+        'gender': 'Select your gender (optional, consider privacy).',
+        'objective': 'A brief, impactful summary of your career goals and what you bring to a role. Keep it concise (2-3 sentences).',
+        'education': 'List degrees, universities, locations, and graduation dates. Start with your most recent education.',
+        'skills': 'Highlight technical skills (programming languages, software) and soft skills (communication, leadership). Use bullet points or commas.',
+        'experience': 'Detail your work history. For each role: Job Title, Company, Location, Dates. Use action verbs and quantifiable achievements in bullet points.',
+        'languages': 'List languages you speak and your proficiency level (e.g., Fluent, Conversational, Basic).',
+        'software': 'Mention relevant software, tools, and platforms you are proficient in.',
+        'declaration': 'A standard declaration statement. You can leave the default or customize it.'
+    };
+
+    // --- Suggestion Box Logic ---
+    const formElements = resumeForm.querySelectorAll('input, textarea, select');
+    formElements.forEach(element => {
+        element.addEventListener('focus', () => {
+            const suggestionText = suggestions[element.id];
+            if (suggestionText) {
+                suggestionBox.innerHTML = suggestionText;
+                suggestionBox.classList.add('show');
+
+                // Position the suggestion box
+                const rect = element.getBoundingClientRect();
+                const containerRect = resumeForm.getBoundingClientRect();
+
+                // Position relative to the form container
+                suggestionBox.style.top = `${rect.top - containerRect.top + element.offsetHeight + 10}px`;
+                suggestionBox.style.left = `${rect.left - containerRect.left}px`;
+                suggestionBox.style.right = 'auto'; // Reset right
+
+                // Adjust if it goes off screen to the right
+                const viewportWidth = window.innerWidth;
+                const suggestionBoxWidth = suggestionBox.offsetWidth;
+                if (rect.left + suggestionBoxWidth > viewportWidth - 20) { // 20px margin from right
+                    suggestionBox.style.left = 'auto';
+                    suggestionBox.style.right = `${containerRect.right - rect.right}px`;
+                }
+            }
+        });
+
+        element.addEventListener('blur', () => {
+            suggestionBox.classList.remove('show');
+        });
+    });
 
     // --- Photo Handling with Cropper.js ---
     photoPreviewBox.addEventListener('click', () => {
@@ -77,10 +130,32 @@ document.addEventListener('DOMContentLoaded', () => {
     resumeForm.addEventListener('submit', (event) => {
         event.preventDefault();
 
-        const nameDesignation = document.getElementById('name-designation').value;
+        // Personal Info
+        const fullName = document.getElementById('full-name').value;
+        const designation = document.getElementById('designation').value;
         const email = document.getElementById('email').value;
         const phone = document.getElementById('phone').value;
         const address = document.getElementById('address').value;
+
+        // New Personal Details
+        const maritalStatus = document.getElementById('marital-status').value;
+        const birthDate = document.getElementById('birth-date').value;
+        const gender = document.getElementById('gender').value;
+
+        // Calculate age from birth date
+        let age = '';
+        if (birthDate) {
+            const today = new Date();
+            const dob = new Date(birthDate);
+            let calculatedAge = today.getFullYear() - dob.getFullYear();
+            const monthDiff = today.getMonth() - dob.getMonth();
+            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
+                calculatedAge--;
+            }
+            age = calculatedAge;
+        }
+
+        // Other Sections
         const objective = document.getElementById('objective').value;
         const education = document.getElementById('education').value;
         const skills = document.getElementById('skills').value;
@@ -89,18 +164,19 @@ document.addEventListener('DOMContentLoaded', () => {
         const software = document.getElementById('software').value;
         const declaration = document.getElementById('declaration').value;
 
-        // Split name and designation if present
-        const [fullName, designation] = nameDesignation.includes(' - ') ? nameDesignation.split(' - ') : [nameDesignation, ''];
-
         // Helper function to format multi-line text into paragraphs or list items
         const formatText = (text) => {
             if (!text) return '';
             const lines = text.split('\n').filter(line => line.trim() !== '');
-            if (lines.length === 1 && !lines[0].startsWith('-')) {
-                return `<p>${lines[0]}</p>`;
-            }
+            if (lines.length === 0) return '';
+
             // If it contains bullet points or multiple lines, format as unordered list
-            return `<ul>${lines.map(line => `<li>${line.startsWith('- ') ? line.substring(2) : line}</li>`).join('')}</ul>`;
+            const hasBulletPoints = lines.some(line => line.trim().startsWith('-'));
+            if (hasBulletPoints || lines.length > 1) {
+                return `<ul>${lines.map(line => `<li>${line.startsWith('- ') ? line.substring(2).trim() : line.trim()}</li>`).join('')}</ul>`;
+            }
+            // Otherwise, format as a single paragraph
+            return `<p>${lines[0].trim()}</p>`;
         };
 
         // Construct the resume HTML with a two-column layout
@@ -112,10 +188,19 @@ document.addEventListener('DOMContentLoaded', () => {
                     <p>${designation}</p>
                 </div>
                 <div class="contact-info">
-                    <span><i class="fas fa-envelope"></i> ${email}</span>
-                    <span><i class="fas fa-phone"></i> ${phone}</span>
-                    <span><i class="fas fa-map-marker-alt"></i> ${address}</span>
+                    ${email ? `<span><i class="fas fa-envelope"></i> ${email}</span>` : ''}
+                    ${phone ? `<span><i class="fas fa-phone"></i> ${phone}</span>` : ''}
+                    ${address ? `<span><i class="fas fa-map-marker-alt"></i> ${address}</span>` : ''}
                 </div>
+
+                <h2 class="resume-section-title">Personal Details</h2>
+                <div class="personal-details-block">
+                    ${maritalStatus ? `<div><strong>Marital Status:</strong> ${maritalStatus}</div>` : ''}
+                    ${birthDate ? `<div><strong>Date of Birth:</strong> ${new Date(birthDate).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</div>` : ''}
+                    ${age ? `<div><strong>Age:</strong> ${age}</div>` : ''}
+                    ${gender ? `<div><strong>Gender:</strong> ${gender}</div>` : ''}
+                </div>
+
 
                 ${skills ? `<h2 class="resume-section-title">Skills</h2>${formatText(skills)}` : ''}
                 ${languages ? `<h2 class="resume-section-title">Languages</h2>${formatText(languages)}` : ''}
