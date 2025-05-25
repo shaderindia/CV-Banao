@@ -329,99 +329,108 @@ select {
 /* A4 Size for Resume Content - Crucial for print/PDF */
 .a4-size {
     width: 210mm; /* A4 width */
-    min-height: 297mm; /* A4 height */
-    padding: 20mm; /* Slightly reduced margins for more content */
+    height: 297mm; /* Fixed A4 height */
+    padding: 18mm; /* Slightly reduced margins for more content */
     background: white;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
     box-sizing: border-box;
     margin-bottom: 25px;
     display: block;
-    overflow: hidden; /* Important to contain content within A4 bounds */
+    overflow: hidden; /* Crucial to prevent content from flowing outside A4 boundaries */
 }
 
 /* --- Resume Content Specific Styling (for #resume-content) --- */
+/* The main resume content area */
 #resume-content {
     font-family: 'Lato', sans-serif; /* Professional, readable font for resume */
     color: var(--text-color);
-    font-size: 9.5pt; /* Smaller base font size for A4 fit */
-    line-height: 1.4; /* Tighter line height */
+    font-size: 9pt; /* **Optimized: Smaller base font size for A4 fit** */
+    line-height: 1.3; /* **Optimized: Tighter line height** */
+    display: flex; /* Make it a flex container for the two-column layout */
+    height: 100%; /* Ensure it takes full height of A4 container */
 }
 
+/* Header Section (Name, Designation, Photo) */
 #resume-content .header {
     text-align: center;
-    margin-bottom: 20px;
-    padding-bottom: 15px;
+    margin-bottom: 15px; /* **Optimized: Tighter margin** */
+    padding-bottom: 10px; /* **Optimized: Tighter padding** */
     border-bottom: 1px solid var(--border-color);
 }
 
 #resume-content .header h1 {
-    font-size: 2.2em; /* Smaller for resume */
+    font-size: 2em; /* Smaller for resume */
     color: var(--primary-color);
-    margin-bottom: 5px;
+    margin-bottom: 4px; /* **Optimized: Tighter margin** */
     font-weight: 700;
     text-transform: uppercase;
     border-bottom: none;
     padding-bottom: 0;
+    line-height: 1.1;
 }
 
 #resume-content .header p {
-    margin: 3px 0 10px 0;
-    font-size: 1em; /* Relative to new base font size */
+    margin: 2px 0 8px 0; /* **Optimized: Tighter margin** */
+    font-size: 0.95em; /* Relative to new base font size */
     color: var(--light-text-color);
     font-weight: 500;
 }
 
+/* Contact Info */
 #resume-content .contact-info {
     display: flex;
     justify-content: center;
-    gap: 15px;
+    gap: 12px; /* **Optimized: Tighter gap** */
     flex-wrap: wrap;
-    font-size: 0.9em;
+    font-size: 0.85em; /* **Optimized: Smaller font** */
     color: var(--light-text-color);
-    margin-top: 10px;
+    margin-top: 8px; /* **Optimized: Tighter margin** */
 }
 
 #resume-content .contact-info span {
     display: flex;
     align-items: center;
-    gap: 5px;
+    gap: 4px; /* **Optimized: Tighter gap** */
 }
 
 #resume-content .contact-info span i {
     color: var(--primary-color);
-    font-size: 1em;
+    font-size: 0.9em;
 }
 
+/* Profile Photo */
 #resume-content .profile-photo-resume {
-    width: 100px;
-    height: 100px;
+    width: 90px; /* **Optimized: Smaller photo** */
+    height: 90px;
     border-radius: 50%;
     object-fit: cover;
-    margin: 0 auto 15px auto;
+    margin: 0 auto 12px auto; /* **Optimized: Tighter margin** */
     border: 3px solid var(--primary-color);
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
     display: block;
 }
 
+/* Resume Section Titles */
 #resume-content .resume-section-title {
     color: var(--primary-color);
-    font-size: 1.3em; /* Smaller for resume */
+    font-size: 1.2em; /* **Optimized: Smaller for resume sections** */
     border-bottom: 2px solid var(--primary-color);
-    padding-bottom: 6px;
-    margin-top: 25px; /* Tighter margin */
-    margin-bottom: 12px; /* Tighter margin */
+    padding-bottom: 5px; /* **Optimized: Tighter padding** */
+    margin-top: 20px; /* **Optimized: Tighter margin** */
+    margin-bottom: 10px; /* **Optimized: Tighter margin** */
     text-transform: uppercase;
     font-weight: 700;
     letter-spacing: 0.5px;
 }
 
+/* Paragraphs and Lists */
 #resume-content p, #resume-content ul {
-    margin-bottom: 8px; /* Tighter spacing */
+    margin-bottom: 6px; /* **Optimized: Tighter spacing** */
 }
 
 #resume-content ul {
     list-style: disc;
-    padding-left: 18px; /* Tighter padding */
+    padding-left: 15px; /* **Optimized: Tighter padding** */
 }
 
 #resume-content ul.no-bullets {
@@ -430,67 +439,70 @@ select {
 }
 
 #resume-content ul li {
-    margin-bottom: 4px; /* Tighter spacing for list items */
+    margin-bottom: 3px; /* **Optimized: Very tight spacing for list items** */
 }
 
+/* Experience and Education Items */
 #resume-content .experience-item,
 #resume-content .education-item {
-    margin-bottom: 15px; /* Tighter spacing */
+    margin-bottom: 12px; /* **Optimized: Tighter spacing** */
 }
 
 #resume-content .experience-item h3,
 #resume-content .education-item h3 {
-    margin: 0 0 3px 0; /* Tighter spacing */
-    font-size: 1.05em; /* Slightly smaller */
+    margin: 0 0 2px 0; /* **Optimized: Very tight spacing** */
+    font-size: 1em; /* Consistent with base font */
     color: var(--text-color);
     font-weight: 700;
 }
 
 #resume-content .experience-item p,
 #resume-content .education-item p {
-    margin: 1px 0; /* Very tight spacing */
-    font-size: 0.95em; /* Slightly smaller */
+    margin: 1px 0; /* **Optimized: Extremely tight spacing** */
+    font-size: 0.9em; /* Slightly smaller */
     color: var(--light-text-color);
 }
 
+/* Declaration Text */
 #resume-content .declaration-text {
     font-style: italic;
-    font-size: 0.85em; /* Smaller */
+    font-size: 0.8em; /* **Optimized: Smaller** */
     color: var(--light-text-color);
     text-align: center;
-    margin-top: 25px; /* Tighter margin */
-    padding-top: 12px; /* Tighter padding */
+    margin-top: 20px; /* **Optimized: Tighter margin** */
+    padding-top: 10px; /* **Optimized: Tighter padding** */
     border-top: 1px dashed var(--border-color);
 }
 
 /* Resume Personal Details block */
 #resume-content .personal-details-block {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); /* More compact */
-    gap: 8px 15px; /* Tighter spacing */
-    font-size: 0.9em; /* Smaller */
-    margin-bottom: 12px; /* Tighter spacing */
-    padding-bottom: 8px; /* Tighter padding */
+    grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); /* **Optimized: More compact** */
+    gap: 6px 10px; /* **Optimized: Tighter spacing** */
+    font-size: 0.85em; /* **Optimized: Smaller** */
+    margin-bottom: 10px; /* **Optimized: Tighter spacing** */
+    padding-bottom: 6px; /* **Optimized: Tighter padding** */
     border-bottom: 1px dashed var(--border-color);
 }
 
 #resume-content .personal-details-block div strong {
     color: var(--primary-color);
-    margin-right: 3px; /* Tighter spacing */
+    margin-right: 2px; /* **Optimized: Tighter spacing** */
 }
 
 
-/* --- Two-Column Layout Example (Template) --- */
+/* --- Two-Column Layout (Template) --- */
 .two-column-layout .a4-size {
     display: flex;
     flex-direction: row;
-    padding: 0;
+    padding: 0; /* Remove padding here as columns will have their own */
+    height: 100%; /* Ensure columns fill A4 height */
 }
 
 .two-column-layout .sidebar {
-    width: 33%; /* Slightly smaller sidebar */
+    width: 33%;
     background-color: var(--background-dark);
-    padding: 20mm 12mm; /* Tighter padding */
+    padding: 18mm 10mm; /* **Optimized: Tighter padding for sidebar** */
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
@@ -500,22 +512,24 @@ select {
 }
 
 .two-column-layout .main-content {
-    width: 67%; /* Slightly larger main content */
-    padding: 20mm 20mm; /* Tighter padding */
+    width: 67%;
+    padding: 18mm 18mm; /* **Optimized: Tighter padding for main content** */
     box-sizing: border-box;
+    display: flex;
+    flex-direction: column; /* Ensure sections stack */
 }
 
 .two-column-layout .sidebar .profile-photo-resume {
-    margin-bottom: 20px;
-    width: 90px; /* Smaller photo */
-    height: 90px;
+    margin-bottom: 15px;
+    width: 80px; /* **Optimized: Even smaller photo for more space** */
+    height: 80px;
     border: 2px solid var(--primary-color);
 }
 
 .two-column-layout .sidebar .header h1,
 .two-column-layout .sidebar .header p {
-    font-size: 1.2em; /* Smaller */
-    margin-bottom: 3px;
+    font-size: 1.1em; /* **Optimized: Smaller** */
+    margin-bottom: 2px;
     color: var(--text-color);
     text-transform: none;
 }
@@ -523,29 +537,29 @@ select {
 .two-column-layout .sidebar .contact-info {
     flex-direction: column;
     align-items: flex-start;
-    gap: 8px; /* Tighter spacing */
-    margin-top: 15px;
-    font-size: 0.85em; /* Smaller */
+    gap: 6px; /* **Optimized: Tighter gap** */
+    margin-top: 10px;
+    font-size: 0.8em; /* **Optimized: Smaller font** */
 }
 
 .two-column-layout .sidebar .resume-section-title {
-    margin-top: 25px; /* Tighter margin */
-    margin-bottom: 8px; /* Tighter margin */
+    margin-top: 20px; /* **Optimized: Tighter margin** */
+    margin-bottom: 6px; /* **Optimized: Tighter margin** */
     border-bottom: 1px solid rgba(0, 123, 255, 0.5);
-    font-size: 1.1em; /* Smaller */
+    font-size: 1em; /* **Optimized: Smaller** */
 }
 
 .two-column-layout .sidebar p {
-    font-size: 0.9em; /* Smaller */
-    margin-bottom: 4px; /* Tighter spacing */
+    font-size: 0.85em; /* **Optimized: Smaller** */
+    margin-bottom: 3px; /* **Optimized: Tighter spacing** */
 }
 .two-column-layout .sidebar ul {
     list-style: none;
     padding-left: 0;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
 }
 .two-column-layout .sidebar ul li {
-    margin-bottom: 3px; /* Tighter spacing */
+    margin-bottom: 2px; /* **Optimized: Very tight spacing** */
 }
 
 .two-column-layout .sidebar .personal-details-block {
@@ -553,11 +567,11 @@ select {
     grid-template-columns: 1fr;
     padding: 0;
     border-bottom: none;
-    margin-top: 15px;
-    font-size: 0.85em; /* Smaller */
+    margin-top: 12px;
+    font-size: 0.8em; /* **Optimized: Smaller** */
 }
 .two-column-layout .sidebar .personal-details-block div {
-    margin-bottom: 4px; /* Tighter spacing */
+    margin-bottom: 3px; /* **Optimized: Tighter spacing** */
 }
 
 
@@ -575,8 +589,8 @@ select {
     display: none;
 }
 .two-column-layout .main-content .resume-section-title {
-    margin-top: 20px;
-    font-size: 1.3em; /* Consistent with sidebar titles */
+    margin-top: 18px; /* **Optimized: Tighter margin** */
+    font-size: 1.15em; /* Consistent with sidebar titles */
 }
 .two-column-layout .main-content .personal-details-block {
     display: none; /* Hide if already in sidebar */
@@ -656,24 +670,51 @@ select {
 
     .a4-size {
         width: 210mm;
-        min-height: 297mm;
+        height: 297mm; /* Ensure fixed height for printing */
         margin: 0 auto;
-        padding: 20mm; /* Use the optimized padding for print */
+        padding: 18mm; /* Use the optimized padding for print */
         box-shadow: none;
         background: white;
         page-break-after: always;
+        overflow: hidden; /* Ensure content doesn't break out of the print page */
     }
 
-    .two-column-layout .a4-size {
+    /* Important: Ensure print styles correctly apply two-column layout */
+    .two-column-layout #resume-content {
         display: flex;
         flex-direction: row;
-        padding: 0;
+        height: 100%;
+        width: 100%; /* Important for print layout */
     }
 
-    .two-column-layout .sidebar,
+    .two-column-layout .sidebar {
+        width: 33%;
+        padding: 18mm 10mm;
+        background-color: var(--background-dark);
+        border-right: 1px solid var(--border-color);
+    }
+
     .two-column-layout .main-content {
-        padding: 20mm 12mm; /* Consistent padding for print */
-        background-color: var(--background-dark); /* Keep sidebar background for print */
+        width: 67%;
+        padding: 18mm 18mm;
+    }
+
+    /* Reset any unwanted margins/paddings that might creep in during print */
+    .two-column-layout .sidebar > *, .two-column-layout .main-content > * {
+        margin-top: 0;
+        margin-bottom: 0;
+    }
+    .two-column-layout .sidebar .resume-section-title,
+    .two-column-layout .main-content .resume-section-title {
+        margin-top: 15px; /* Re-apply section title margin for print */
+        margin-bottom: 8px;
+    }
+    .two-column-layout .sidebar .profile-photo-resume {
+        margin-bottom: 12px;
+    }
+    .two-column-layout .sidebar .contact-info,
+    .two-column-layout .sidebar .personal-details-block {
+        margin-top: 10px;
     }
 }
 
