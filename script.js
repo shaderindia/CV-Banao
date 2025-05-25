@@ -231,56 +231,66 @@ document.addEventListener('DOMContentLoaded', () => {
     downloadPdfBtn.addEventListener('click', () => {
         // Ensure resumeContent is visible and correctly sized before rendering
         resumeContent.style.display = 'block'; // Make sure it's visible for html2canvas
-        resumeContent.style.position = 'absolute'; // Prevent layout shift during capture
-        resumeContent.style.left = '-9999px'; // Move off-screen to avoid flickering
+        // Important: Remove absolute positioning and left shift temporarily for html2canvas capture
+        // as this can sometimes interfere with how elements are rendered by the library.
+        resumeContent.style.position = 'static';
+        resumeContent.style.left = 'auto';
 
-        html2canvas(resumeContent, {
-            scale: 2, // Increase scale for better resolution in PDF
-            useCORS: true, // Needed if you load images from other domains (e.g., Font Awesome)
-            logging: true, // Enable logging for debugging
-            allowTaint: true // Allow images to be "tainted" for cross-origin issues (might affect security if not careful)
-        }).then(canvas => {
-            const { jsPDF } = window.jspdf;
-            const imgData = canvas.toDataURL('image/jpeg', 1.0); // Convert canvas to JPEG Data URL
+        // Add a small delay to ensure all DOM elements, especially images, have rendered
+        setTimeout(() => {
+            html2canvas(resumeContent, {
+                scale: 2, // Increase scale for better resolution in PDF
+                useCORS: true, // Needed if you load images from other domains (e.g., Font Awesome)
+                logging: true, // Enable logging for debugging
+                allowTaint: true, // Allow images to be "tainted" for cross-origin issues (might affect security if not careful)
+                backgroundColor: '#ffffff', // Explicitly set background color
+                // IMPORTANT: Ensure the image is fully loaded.
+                // html2canvas will wait for `<img>` tags to load, but if the `src` was
+                // just set, it might need a moment.
+                // The `setTimeout` above should help.
+            }).then(canvas => {
+                const { jsPDF } = window.jspdf;
+                const imgData = canvas.toDataURL('image/jpeg', 1.0); // Convert canvas to JPEG Data URL
 
-            const pdf = new jsPDF({
-                orientation: 'portrait',
-                unit: 'mm',
-                format: 'a4',
-            });
+                const pdf = new jsPDF({
+                    orientation: 'portrait',
+                    unit: 'mm',
+                    format: 'a4',
+                });
 
-            const imgWidth = 210; // A4 width in mm
-            const pageHeight = 297; // A4 height in mm
-            const imgHeight = canvas.height * imgWidth / canvas.width; // Calculate image height to maintain aspect ratio
-            let heightLeft = imgHeight;
+                const imgWidth = 210; // A4 width in mm
+                const pageHeight = 297; // A4 height in mm
+                const imgHeight = canvas.height * imgWidth / canvas.width; // Calculate image height to maintain aspect ratio
+                let heightLeft = imgHeight;
 
-            let position = 0;
+                let position = 0;
 
-            pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
-            heightLeft -= pageHeight;
-
-            while (heightLeft >= 0) {
-                position = heightLeft - imgHeight;
-                pdf.addPage();
                 pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
                 heightLeft -= pageHeight;
-            }
 
-            pdf.save('your_resume.pdf');
+                while (heightLeft > 0) { // Changed >= to > to avoid adding a blank page if content fits perfectly
+                    position = heightLeft - imgHeight;
+                    pdf.addPage();
+                    pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
+                    heightLeft -= pageHeight;
+                }
 
-            // Reset styles after capture
-            resumeContent.style.display = '';
-            resumeContent.style.position = '';
-            resumeContent.style.left = '';
+                pdf.save('your_resume.pdf');
 
-        }).catch(error => {
-            console.error('Error generating PDF:', error);
-            alert('Could not generate PDF. Please try again or check console for errors.');
-            // Reset styles in case of error
-            resumeContent.style.display = '';
-            resumeContent.style.position = '';
-            resumeContent.style.left = '';
-        });
+                // Reset styles after capture
+                resumeContent.style.display = 'block'; // Keep it visible for the user preview
+                resumeContent.style.position = ''; // Reset position
+                resumeContent.style.left = ''; // Reset left
+
+            }).catch(error => {
+                console.error('Error generating PDF:', error);
+                alert('Could not generate PDF. Please try again or check console for errors.');
+                // Reset styles in case of error
+                resumeContent.style.display = 'block';
+                resumeContent.style.position = '';
+                resumeContent.style.left = '';
+            });
+        }, 100); // Small delay (e.g., 100ms) for rendering
     });
 
     // --- Reset Form Functionality ---
