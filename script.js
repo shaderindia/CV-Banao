@@ -11,14 +11,87 @@ document.addEventListener('DOMContentLoaded', () => {
     const resetFormBtn = document.getElementById('reset-form-btn');
     const suggestionBox = document.getElementById('suggestion-box');
 
-    let cropper; // Cropper.js instance
-    let croppedPhotoDataUrl = ''; // Stores the data URL of the cropped image
+    let cropper;
+    let croppedPhotoDataUrl = '';
 
-    // ... (Suggestion Data Map and Suggestion Box Logic - NO CHANGES) ...
+    // --- Suggestion Data Map ---
+    const suggestions = {
+        'full-name': 'Enter your full legal name as you want it to appear on your resume. This is typically at the top.',
+        'designation': 'Your current or target job title, such as "Software Engineer," "Marketing Manager," or "Graphic Designer." Be specific!',
+        'email': 'Provide a professional email address (e.g., yourname@email.com). Avoid informal addresses.',
+        'phone': 'Include your primary contact phone number, preferably with your country code for international applications (e.g., +1 555-123-4567).',
+        'address': 'Your city and state/country are usually sufficient (e.g., New York, NY, USA). A full street address is rarely needed for privacy.',
+        'marital-status': 'Select your marital status. This is optional and often excluded from resumes unless legally required or highly relevant to the role/region.',
+        'birth-date': 'Your date of birth. This is optional and often omitted from resumes due to privacy concerns and to avoid age discrimination. Consider local regulations.',
+        'gender': 'Select your gender. Similar to birth date, this is optional and often excluded for privacy and to prevent discrimination.',
+        'objective': 'A concise, impactful summary (2-3 sentences) of your career goals and what unique value you bring to a role. Tailor it to each job application!',
+        'education': 'List all relevant educational achievements. For each entry: Degree, University, City, State/Country, and Graduation Date (or expected date). Start with your most recent degree. Example: "M.Sc. Computer Science, University of XYZ, London, UK, 2023."',
+        'experience': 'Detail your work history. For each role: Job Title, Company Name, City, State/Country, and Dates (e.g., "Software Developer, Tech Solutions Inc., New York, 2021 - Present"). Use strong action verbs and quantify your achievements with numbers and results. Example: "- Managed backend systems, improving data processing speed by 25% and reducing errors by 10%."',
+        'skills': 'Highlight both technical skills (programming languages, software, tools) and soft skills (communication, leadership, problem-solving). Use bullet points or comma-separated lists for clarity. Example: "Python, JavaScript, React, SQL, AWS, Project Management, Team Leadership."',
+        'languages': 'List all languages you speak and your proficiency level (e.g., "English (Fluent)", "Spanish (Conversational)", "French (Basic)").',
+        'software': 'Mention specific software, tools, and platforms you are proficient in that are relevant to the jobs you\'re applying for. Example: "Microsoft Office Suite, Adobe Creative Cloud, Salesforce, JIRA, Figma, AutoCAD."',
+        'declaration': 'A standard declaration statement. You can use the default or customize it. It usually affirms the truthfulness of the information provided.',
+        'photo': 'Upload a professional headshot. Ensure it\'s a clear, well-lit image with a neutral background. Cropping to a circle is recommended for a modern look.'
+    };
+
+    // --- Suggestion Box Logic ---
+    const formElements = resumeForm.querySelectorAll('input, textarea, select');
+    formElements.forEach(element => {
+        element.addEventListener('focus', () => {
+            let id = element.id;
+            // Handle photo input specifically
+            if (element.type === 'file' && element.id === 'photo') {
+                id = 'photo';
+            }
+
+            const suggestionText = suggestions[id];
+            if (suggestionText) {
+                suggestionBox.innerHTML = suggestionText.replace(/\n/g, '<br>');
+                suggestionBox.classList.add('show');
+
+                const rect = element.getBoundingClientRect();
+                const containerRect = resumeForm.getBoundingClientRect(); // Get container's rect for positioning
+
+                // Calculate position relative to the container for better stability
+                let topPos = rect.top - containerRect.top + element.offsetHeight + 10;
+                let leftPos = rect.left - containerRect.left;
+
+                // Adjust if it goes off screen to the right
+                const viewportWidth = window.innerWidth;
+                const suggestionBoxWidth = suggestionBox.offsetWidth || 350; // Use default if not rendered yet
+                const margin = 20; // 20px margin from viewport edges
+
+                // Calculate element's right edge relative to the viewport
+                const elementRightViewport = rect.right;
+
+                if (elementRightViewport + suggestionBoxWidth > viewportWidth - margin) {
+                    // If it overflows right, align its right edge with the element's right edge
+                    // and then offset by its width to the left.
+                    leftPos = (rect.right - containerRect.left) - suggestionBoxWidth;
+                    // Ensure it doesn't go off the left side of the container
+                    if (leftPos < 0) {
+                        leftPos = 0; // Align with container's left edge
+                    }
+                }
+
+                suggestionBox.style.top = `${topPos}px`;
+                suggestionBox.style.left = `${leftPos}px`;
+                suggestionBox.style.right = 'auto'; // Reset right in case it was set previously
+
+                // Handle cases where the suggestion box might be below the viewport
+                // This is a complex scenario to handle perfectly across all layouts,
+                // but for simple forms, positioning relative to the element is usually enough.
+            }
+        });
+
+        element.addEventListener('blur', () => {
+            suggestionBox.classList.remove('show');
+        });
+    });
 
     // --- Photo Handling with Cropper.js ---
     photoPreviewBox.addEventListener('click', () => {
-        photoInput.click(); // Trigger hidden file input click
+        photoInput.click();
     });
 
     photoInput.addEventListener('change', (event) => {
@@ -57,12 +130,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 fillColor: '#fff',
             }).toDataURL('image/jpeg', 0.9);
 
-            // Set the preview image to the cropped version
             imageToCrop.src = croppedPhotoDataUrl;
             imageToCrop.style.display = 'block';
             photoPlaceholder.style.display = 'none';
             cropButton.style.display = 'none';
-            cropper.destroy(); // Destroy cropper instance
+            cropper.destroy();
         } else {
             alert('Please select a photo first to crop.');
         }
@@ -73,9 +145,36 @@ document.addEventListener('DOMContentLoaded', () => {
     resumeForm.addEventListener('submit', (event) => {
         event.preventDefault();
 
-        // ... (All data collection from form fields - NO CHANGES) ...
+        const fullName = document.getElementById('full-name').value;
+        const designation = document.getElementById('designation').value;
+        const email = document.getElementById('email').value;
+        const phone = document.getElementById('phone').value;
+        const address = document.getElementById('address').value;
 
-        // Helper function to format multi-line text into paragraphs or list items
+        const maritalStatus = document.getElementById('marital-status').value;
+        const birthDate = document.getElementById('birth-date').value;
+        const gender = document.getElementById('gender').value;
+
+        let age = '';
+        if (birthDate) {
+            const today = new Date();
+            const dob = new Date(birthDate);
+            let calculatedAge = today.getFullYear() - dob.getFullYear();
+            const monthDiff = today.getMonth() - dob.getMonth();
+            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
+                calculatedAge--;
+            }
+            age = calculatedAge;
+        }
+
+        const objective = document.getElementById('objective').value;
+        const education = document.getElementById('education').value;
+        const skills = document.getElementById('skills').value;
+        const experience = document.getElementById('experience').value;
+        const languages = document.getElementById('languages').value;
+        const software = document.getElementById('software').value;
+        const declaration = document.getElementById('declaration').value;
+
         const formatText = (text) => {
             if (!text) return '';
             const lines = text.split('\n').filter(line => line.trim() !== '');
@@ -88,9 +187,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return `<p>${lines[0].trim()}</p>`;
         };
 
-        // Construct the resume HTML with a two-column layout
-        // IMPORTANT: The img tag should always be present, even if src is empty,
-        // and its display property handled by CSS.
+        // Construct the resume HTML with the new order for sections
         resumeContent.innerHTML = `
             <div class="sidebar">
                 <img src="${croppedPhotoDataUrl || ''}" alt="Profile Photo" class="profile-photo-resume">
@@ -111,17 +208,15 @@ document.addEventListener('DOMContentLoaded', () => {
                     ${age ? `<div><strong>Age:</strong> ${age}</div>` : ''}
                     ${gender ? `<div><strong>Gender:</strong> ${gender}</div>` : ''}
                 </div>
-
-
-                ${skills ? `<h2 class="resume-section-title">Skills</h2>${formatText(skills)}` : ''}
-                ${languages ? `<h2 class="resume-section-title">Languages</h2>${formatText(languages)}` : ''}
-                ${software ? `<h2 class="resume-section-title">Software</h2>${formatText(software)}` : ''}
             </div>
 
             <div class="main-content">
                 ${objective ? `<h2 class="resume-section-title">Objective</h2>${formatText(objective)}` : ''}
                 ${experience ? `<h2 class="resume-section-title">Experience</h2>${formatText(experience)}` : ''}
                 ${education ? `<h2 class="resume-section-title">Education</h2>${formatText(education)}` : ''}
+                ${skills ? `<h2 class="resume-section-title">Skills</h2>${formatText(skills)}` : ''}
+                ${languages ? `<h2 class="resume-section-title">Languages</h2>${formatText(languages)}` : ''}
+                ${software ? `<h2 class="resume-section-title">Software</h2>${formatText(software)}` : ''}
                 ${declaration ? `<p class="declaration-text">${declaration}</p>` : ''}
             </div>
         `;
@@ -132,21 +227,18 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // --- PDF Download Functionality ---
-    downloadPdfBtn.addEventListener('click', async () => { // Made the function async
-        // Show the resume content in the visible DOM for html2canvas
-        // We'll hide other elements via CSS before html2canvas capture
+    downloadPdfBtn.addEventListener('click', async () => {
         resumeOutput.style.display = 'block';
-        resumeContent.style.position = 'static'; // Ensure it's in normal flow
-        resumeContent.style.left = 'auto'; // Reset left
-        resumeContent.style.visibility = 'visible'; // Ensure it's visible
+        resumeContent.style.position = 'static';
+        resumeContent.style.left = 'auto';
+        resumeContent.style.visibility = 'visible';
 
-        // Function to wait for image to load
         const loadImage = (imgElement) => {
             return new Promise((resolve, reject) => {
-                if (!imgElement || !imgElement.src) { // No image or no src
+                if (!imgElement || !imgElement.src) {
                     return resolve();
                 }
-                if (imgElement.complete) { // Image already loaded
+                if (imgElement.complete) {
                     return resolve();
                 }
                 imgElement.onload = resolve;
@@ -154,7 +246,6 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         };
 
-        // Wait for the profile photo to load (if present)
         const profilePhotoElement = resumeContent.querySelector('.profile-photo-resume');
         try {
             if (profilePhotoElement && croppedPhotoDataUrl) {
@@ -163,22 +254,19 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         } catch (error) {
             console.warn('Error loading profile photo for PDF capture, proceeding anyway:', error);
-            // Don't block PDF generation if image fails to load, just log a warning
         }
 
-        // Add a small delay AFTER image is confirmed loaded for DOM to fully render
-        // This is crucial for html2canvas
         setTimeout(() => {
             html2canvas(resumeContent, {
-                scale: 3, // Increased scale for even better resolution
+                scale: 3,
                 useCORS: true,
                 logging: true,
                 allowTaint: true,
-                backgroundColor: '#ffffff', // Explicitly set background color for canvas
-                scrollX: 0, // Ensure starting from top-left
+                backgroundColor: '#ffffff',
+                scrollX: 0,
                 scrollY: 0,
-                windowWidth: resumeContent.scrollWidth,  // Capture full width
-                windowHeight: resumeContent.scrollHeight, // Capture full height
+                windowWidth: resumeContent.scrollWidth,
+                windowHeight: resumeContent.scrollHeight,
             }).then(canvas => {
                 const { jsPDF } = window.jspdf;
                 const imgData = canvas.toDataURL('image/jpeg', 1.0);
@@ -189,8 +277,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     format: 'a4',
                 });
 
-                const imgWidth = 210; // A4 width in mm
-                const pageHeight = 297; // A4 height in mm
+                const imgWidth = 210;
+                const pageHeight = 297;
                 const imgHeight = canvas.height * imgWidth / canvas.width;
                 let heightLeft = imgHeight;
 
@@ -208,24 +296,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 pdf.save('your_resume.pdf');
 
-                // Reset styles after capture
-                resumeContent.style.display = 'block'; // Keep it visible for the user preview
+                resumeContent.style.display = 'block';
                 resumeContent.style.position = '';
                 resumeContent.style.left = '';
-                resumeContent.style.visibility = ''; // Reset visibility
+                resumeContent.style.visibility = '';
 
             }).catch(error => {
                 console.error('Error generating PDF:', error);
                 alert('Could not generate PDF. Please try again or check console for errors.');
-                // Reset styles in case of error
                 resumeContent.style.display = 'block';
                 resumeContent.style.position = '';
                 resumeContent.style.left = '';
                 resumeContent.style.visibility = '';
             });
-        }, 50); // Small delay after image load for final DOM rendering
+        }, 50);
     });
-
 
     // --- Reset Form Functionality ---
     resetFormBtn.addEventListener('click', () => {
