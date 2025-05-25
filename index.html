@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Resume Builder - Mechanical Engineer</title>
+  <link id="theme-style" rel="stylesheet" href="style-classic.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Resume Builder - Mechanical Engineer</h1>
+
+    <form id="resume-form">
+      <label>Choose Resume Style:</label>
+      <select id="style-select">
+        <option value="classic">Classic</option>
+        <option value="modern">Modern</option>
+        <option value="minimalist">Minimalist</option>
+        <option value="elegant">Elegant</option>
+        <option value="professional">Professional</option>
+        <option value="tech">Tech</option>
+        <option value="creative">Creative</option>
+        <option value="infographic">Infographic</option>
+        <option value="compact">Compact</option>
+        <option value="timeline">Timeline</option>
+      </select>
+
+      <input type="text" placeholder="Full Name" id="name" required>
+      <input type="text" placeholder="Email" id="email" required>
+      <input type="text" placeholder="Phone Number" id="phone" required>
+      <input type="text" placeholder="Address" id="address" required>
+
+      <label>Upload Photo:</label>
+      <input type="file" id="photo" accept="image/*" required>
+
+      <textarea id="objective" placeholder="Career Objective" required></textarea>
+      <textarea id="education" placeholder="Education" required></textarea>
+      <textarea id="skills" placeholder="Technical Skills" required></textarea>
+      <textarea id="experience" placeholder="Experience / Internships" required></textarea>
+      <textarea id="software" placeholder="Software Proficiency" required></textarea>
+
+      <button type="submit">Generate Resume</button>
+    </form>
+
+    <div id="resume-output" style="display:none;">
+      <h2>Generated Resume</h2>
+      <div id="resume-content" class="a4-paper"></div>
+      <button onclick="printResume()">Print</button>
+      <button onclick="downloadPDF()">Download as PDF</button>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
