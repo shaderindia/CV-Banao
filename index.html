@@ -1,1153 +1,914 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7727546410030506"
-     crossorigin="anonymous"></script>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Elite Resume Builder</title>
-
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                        lato: ['Lato', 'sans-serif'],
-                        montserrat: ['Montserrat', 'sans-serif'],
-                    },
-                    colors: {
-                        primary: '#4F46E5', // Indigo 600
-                        secondary: '#6366F1', // Indigo 500
-                        accent: '#818CF8', // Indigo 400
-                        light: '#E0E7FF', // Indigo 100
-                        dark: '#1F2937', // Gray 800 - Used for general dark text
-                    }
-                }
-            }
-        }
-    </script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Montserrat:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f3f4f6; /* Light gray background */
-            color: #374151; /* Dark gray text */
-            /* Subtle background pattern */
-            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%239C92AC' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0 20v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zM6 46v-4H4v4H0v2h4v4h2v-4h4v-2H6zm0-20v-4H4v4H0v2h4v4h2v-4h4v-2H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-            background-size: 60px 60px;
         }
-        .container {
-            max-width: 960px;
-            margin: 2rem auto;
-            padding: 2rem;
-            background-color: #ffffff;
-            border-radius: 1rem; /* Rounded corners */
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* Subtle shadow */
-        }
-        h1, h2 {
-            font-family: 'Montserrat', sans-serif;
-            color: #1F2937; /* Darker heading color */
-            margin-bottom: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-        h1 {
-            font-size: 2.25rem; /* text-4xl */
-            font-weight: 700; /* font-bold */
-            text-align: center;
-            color: #4F46E5; /* Primary color for main title */
-        }
-        h2 {
-            font-size: 1.5rem; /* text-2xl */
-            font-weight: 600; /* font-semibold */
-            border-bottom: 2px solid #E0E7FF; /* Light indigo border */
-            padding-bottom: 0.75rem;
-            margin-top: 2rem;
-        }
-        label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-            color: #374151;
-        }
-        input[type="text"],
-        input[type="email"],
-        input[type="date"],
-        select,
-        textarea {
-            width: 100%;
-            padding: 0.75rem;
-            margin-top: 0.25rem;
-            border: 1px solid #D1D5DB; /* Gray 300 */
-            border-radius: 0.5rem; /* Rounded corners */
-            font-size: 1rem;
-            transition: border-color 0.2s, box-shadow 0.2s;
-        }
-        input[type="text"]:focus,
-        input[type="email"]:focus,
-        input[type="date"]:focus,
-        select:focus,
-        textarea:focus {
-            border-color: #6366F1; /* Secondary color on focus */
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2); /* Focus ring */
-        }
-        textarea {
-            resize: vertical;
-        }
-        .form-section-group {
-            margin-bottom: 2rem;
-            padding: 1.5rem;
-            background-color: #F9FAFB; /* Lighter background for sections */
-            border-radius: 0.75rem;
-            border: 1px solid #E5E7EB; /* Gray 200 */
-            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-        }
-        .form-section-group:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 18px -3px rgba(0, 0, 0, 0.15), 0 6px 9px -2px rgba(0, 0, 0, 0.08);
-        }
-        .form-header {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 2rem;
-            margin-bottom: 2rem;
-        }
-        .personal-contact-info {
-            flex: 2;
-            min-width: 300px;
-        }
-        .photo-upload-area {
-            flex: 1;
-            min-width: 200px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 1rem;
-        }
-        .photo-preview-box {
-            width: 150px;
-            height: 150px;
-            border: 2px dashed #9CA3AF; /* Gray 400 */
-            border-radius: 50%; /* Circular */
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        
+        /* A4 dimensions: 210mm x 297mm = 8.27" x 11.69" at 96 DPI = 794px x 1123px */
+        .a4-container {
+            width: 210mm;
+            min-height: 297mm;
+            max-height: 297mm;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
             overflow: hidden;
-            cursor: pointer;
-            background-color: #F3F4F6;
-            position: relative;
-            transition: border-color 0.2s, transform 0.2s;
         }
-        .photo-preview-box:hover {
-            border-color: #4F46E5;
-            transform: scale(1.05);
-        }
-        .photo-preview-box img {
+        
+        .a4-content {
             width: 100%;
             height: 100%;
-            object-fit: cover;
-            border-radius: 50%;
-        }
-        #photo-placeholder {
-            color: #6B7280; /* Gray 500 */
-            text-align: center;
-        }
-        #photo-placeholder .fas {
-            font-size: 2.5rem;
-            margin-bottom: 0.5rem;
-            display: block;
-        }
-        .btn-primary, .btn-secondary {
-            padding: 0.75rem 1.5rem;
-            border-radius: 0.5rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background-color 0.2s, transform 0.2s, box-shadow 0.2s;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            justify-content: center;
-        }
-        .btn-primary {
-            background-color: #4F46E5;
-            color: #ffffff;
-            border: none;
-            box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.1), 0 2px 4px -1px rgba(79, 70, 229, 0.06);
-        }
-        .btn-primary:hover {
-            background-color: #6366F1;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 10px -1px rgba(79, 70, 229, 0.15), 0 3px 6px -1px rgba(79, 70, 229, 0.08);
-        }
-        .btn-secondary {
-            background-color: #E0E7FF;
-            color: #4F46E5;
-            border: 1px solid #4F46E5;
-        }
-        .btn-secondary:hover {
-            background-color: #C7D2FE;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.05), 0 2px 4px -1px rgba(79, 70, 229, 0.03);
-        }
-        .form-actions {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1rem;
-            justify-content: center;
-            margin-top: 2rem;
-        }
-
-        /* Resume Output Styling */
-        #resume-output {
-            margin-top: 3rem;
-            padding: 2rem;
-            background-color: #ffffff;
-            border-radius: 1rem;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-        }
-        .output-title {
-            text-align: center;
-            color: #4F46E5;
-            font-size: 2rem;
-            font-weight: 700;
-            margin-bottom: 2rem;
-        }
-        #resume-content-wrapper {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 2rem;
-        }
-        #resume-content {
-            background-color: #ffffff;
-            padding: 2rem;
-            border: 1px solid #D1D5DB;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            line-height: 1.6;
-            color: #374151;
-            width: 210mm; /* A4 width */
-            min-height: 297mm; /* A4 height */
+            padding: 15mm;
             box-sizing: border-box;
-            font-size: 0.95rem;
-        }
-        /* Updated: Highlight H3 Headlines */
-        #resume-content h3 {
-            font-family: 'Montserrat', sans-serif;
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: #1F2937; /* Darker text for contrast */
-            margin-top: 1.5rem;
-            margin-bottom: 1rem; /* More space below */
-            padding: 0.5rem 1rem; /* Padding inside the box */
-            background-color: #E0E7FF; /* Light indigo background */
-            border-radius: 0.5rem; /* Slightly rounded corners */
-            border-bottom: none; /* Remove previous border-bottom */
-            display: block; /* Ensure it takes full width */
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* Subtle shadow for depth */
-        }
-        #resume-content p, #resume-content ul {
-            margin-bottom: 0.75rem;
-        }
-        #resume-content ul {
-            list-style-type: disc;
-            margin-left: 1.5rem;
-        }
-        #resume-content li {
-            margin-bottom: 0.25rem;
-        }
-        .output-actions {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1rem;
-            justify-content: center;
-            margin-top: 2rem;
-        }
-
-        /* Modal Styling */
-        .modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-        }
-        .modal-content {
-            background-color: #ffffff;
-            padding: 2rem;
-            border-radius: 1rem;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-            max-width: 90%;
-            max-height: 90%;
-            overflow: auto;
             display: flex;
             flex-direction: column;
-            gap: 1.5rem;
         }
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #E5E7EB;
-            padding-bottom: 1rem;
-        }
-        .modal-header h3 {
-            margin: 0;
-            font-size: 1.5rem;
-            color: #1F2937;
-        }
-        .modal-body {
-            flex-grow: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 300px;
-        }
-        .modal-body img {
-            max-width: 100%;
-            max-height: 500px; /* Limit image height in modal */
-            display: block; /* Important for Cropper.js */
-        }
-        .modal-footer {
-            display: flex;
-            justify-content: flex-end;
-            gap: 1rem;
-            border-top: 1px solid #E5E7EB;
-            padding-top: 1rem;
-        }
-
-        /* Message Box Styling */
-        .message-box {
-            position: fixed;
-            top: 1rem;
-            right: 1rem;
-            background-color: #4F46E5;
-            color: white;
-            padding: 1rem 1.5rem;
-            border-radius: 0.5rem;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-            z-index: 1100;
-            opacity: 0;
-            transform: translateY(-20px);
-            transition: opacity 0.3s ease-out, transform 0.3s ease-out;
-        }
-        .message-box.show {
-            opacity: 1;
-            transform: translateY(0);
-        }
-        .message-box.error {
-            background-color: #EF4444; /* Red 500 */
-        }
-        .message-box.success {
-            background-color: #22C55E; /* Green 500 */
-        }
-
-        /* Loading Spinner */
-        .spinner {
-            border: 4px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            border-top: 4px solid #ffffff;
-            width: 24px;
-            height: 24px;
-            -webkit-animation: spin 1s linear infinite;
-            animation: spin 1s linear infinite;
-            display: none; /* Hidden by default */
-        }
-        .btn-primary .spinner {
-            border-top-color: #4F46E5; /* Adjust for primary button */
-        }
-        .btn-primary.loading .spinner {
-            display: inline-block;
-        }
-        .btn-primary.loading {
-            cursor: not-allowed;
-            opacity: 0.8;
-        }
-        @-webkit-keyframes spin {
-            0% { -webkit-transform: rotate(0deg); }
-            100% { -webkit-transform: rotate(360deg); }
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* Confetti Container */
-        #confetti-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none; /* Allow clicks to pass through */
-            z-index: 1050; /* Above content, below modals */
-            overflow: hidden;
-        }
-        .confetti {
-            position: absolute;
-            width: 10px;
-            height: 10px;
-            background-color: var(--confetti-color);
-            opacity: 0;
-            animation: confetti-fall 3s forwards;
-        }
-
-        @keyframes confetti-fall {
-            0% {
-                opacity: 0;
-                transform: translateY(-100px) rotateZ(0deg);
-            }
-            10% {
-                opacity: 1;
-            }
-            100% {
-                opacity: 0;
-                transform: translateY(100vh) rotateZ(720deg);
-            }
-        }
-
-
-        /* Footer */
-        .credits {
-            text-align: center;
-            margin-top: 3rem;
-            padding: 1rem;
-            color: #6B7280;
-            font-size: 0.875rem;
-        }
-        .credits a {
-            color: #4F46E5;
-            text-decoration: none;
-            font-weight: 600;
-        }
-        .credits a:hover {
-            text-decoration: underline;
-        }
-
-        /* Print Styles */
+        
+        /* Print styles */
         @media print {
-            body * {
-                visibility: hidden;
-            }
-            #resume-output, #resume-output * {
-                visibility: visible;
-            }
-            #resume-output {
-                position: absolute;
-                left: 0;
-                top: 0;
-                width: 100%;
-                box-shadow: none;
-                border: none;
+            body {
                 margin: 0;
                 padding: 0;
+                background: white;
             }
-            #resume-content {
-                width: 100%;
-                min-height: auto;
-                border: none;
+            
+            .a4-container {
+                width: 210mm;
+                height: 297mm;
+                margin: 0;
                 box-shadow: none;
-                padding: 1cm; /* Standard print margins */
+                page-break-after: avoid;
             }
-            .output-actions, .credits, .message-box, .modal, #confetti-container {
+            
+            .a4-content {
+                padding: 15mm;
+            }
+            
+            .no-print {
                 display: none !important;
             }
         }
+        
+        /* Responsive text sizing for A4 */
+        .resume-title {
+            font-size: 24px;
+            line-height: 1.2;
+        }
+        
+        .resume-subtitle {
+            font-size: 14px;
+            line-height: 1.3;
+        }
+        
+        .resume-section-title {
+            font-size: 16px;
+            line-height: 1.3;
+            margin-bottom: 8px;
+        }
+        
+        .resume-text {
+            font-size: 11px;
+            line-height: 1.4;
+        }
+        
+        .resume-small-text {
+            font-size: 10px;
+            line-height: 1.3;
+        }
+        
+        /* Compact spacing for A4 */
+        .resume-section {
+            margin-bottom: 12px;
+        }
+        
+        .resume-item {
+            margin-bottom: 8px;
+        }
+        
+        /* Profile photo sizing */
+        .profile-photo {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+        
+        /* Skills grid optimization */
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 6px;
+        }
+        
+        /* Language items */
+        .language-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 2px 0;
+        }
+        
+        /* Cropper modal styles */
+        .cropper-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .cropper-container-wrapper {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            max-width: 90vw;
+            max-height: 90vh;
+        }
+        
+        .cropper-container {
+            max-width: 500px;
+            max-height: 400px;
+        }
     </style>
 </head>
-<body>
-    <div class="container">
-        <h1><i class="fas fa-file-alt"></i> Elite Resume Builder by <a href="https://www.instagram.com/nishix_vamp/" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">Nishikant Xalxo</a></h1>
-        <p class="text-center text-sm text-gray-500 mb-4">Data is saved in your browser's local storage.</p>
+<body class="bg-gray-50 min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-gray-800 mb-2">Elite Resume Builder</h1>
+            <p class="text-gray-600">For Mechanical Engineers Only</p>
+        </div>
 
-        <form id="resume-form" class="space-y-6">
-            <div class="form-section-group">
-                <div class="form-header">
-                    <div class="personal-contact-info space-y-4">
-                        <label for="full-name">Full Name:
-                            <input type="text" id="full-name" required placeholder="e.g., Jane Doe" class="mt-1">
-                        </label>
-                        <label for="designation">Designation:
-                            <input type="text" id="designation" required placeholder="e.g., Senior Marketing Manager" class="mt-1">
-                        </label>
-                        <label for="email">Email:
-                            <input type="email" id="email" required placeholder="your.email@example.com" class="mt-1">
-                        </label>
-                        <label for="phone">Phone:
-                            <input type="text" id="phone" required placeholder="+123 456 7890" class="mt-1">
-                        </label>
-                        <label for="address">Address:
-                            <input type="text" id="address" required placeholder="123 Main St, Anytown, USA" class="mt-1">
-                        </label>
-                    </div>
-                    <div class="photo-upload-area">
-                        <label for="photo" class="text-center">Profile Photo:</label>
-                        <input type="file" id="photo" accept="image/*" class="hidden">
-                        <div class="photo-preview-box" id="photo-preview-box">
-                            <img id="imageToCropPreview" src="" alt="Profile Preview" class="hidden">
-                            <p id="photo-placeholder"><i class="fas fa-camera"></i> Click to upload photo</p>
+        <!-- Main Content -->
+        <div class="grid lg:grid-cols-2 gap-8">
+            <!-- Form Section -->
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <h2 class="text-2xl font-semibold mb-6 text-gray-800">Build Your Resume</h2>
+                
+                <!-- Profile Photo Upload -->
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Profile Photo</label>
+                    <div class="flex items-center space-x-4">
+                        <input type="file" id="photoUpload" accept="image/*" class="hidden">
+                        <button onclick="document.getElementById('photoUpload').click()" 
+                                class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors">
+                            <i class="fas fa-camera mr-2"></i>Upload Photo
+                        </button>
+                        <div id="photoPreview" class="w-16 h-16 bg-gray-200 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-user text-gray-400"></i>
                         </div>
-                        <button type="button" id="crop-button" class="btn-secondary hidden"><i class="fas fa-crop"></i> Crop Image</button>
                     </div>
                 </div>
-            </div>
 
-            <div class="form-section-group">
-                <div class="section">
-                    <h2><i class="fas fa-user-circle"></i> Personal Details</h2>
-                    <div class="personal-details-grid mt-4">
-                        <label for="marital-status">Marital Status:
-                            <select id="marital-status" class="mt-1">
-                                <option value="">Select...</option>
-                                <option value="Single">Single</option>
-                                <option value="Married">Married</option>
-                                <option value="Divorced">Divorced</option>
-                                <option value="Widowed">Widowed</option>
-                                <option value="Prefer not to say">Prefer not to say</option>
+                <!-- Personal Details -->
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold mb-3 text-gray-700">Personal Details</h3>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <input type="text" id="fullName" placeholder="Full Name" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        <input type="email" id="email" placeholder="Email" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        <input type="tel" id="phone" placeholder="Phone Number" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        <input type="text" id="location" placeholder="Location" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        <input type="url" id="linkedin" placeholder="LinkedIn Profile" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        <input type="url" id="github" placeholder="GitHub Profile" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    </div>
+                </div>
+
+                <!-- Objective/Summary -->
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold mb-3 text-gray-700">Objective/Summary</h3>
+                    <textarea id="objective" placeholder="Write your career objective or professional summary..." 
+                              class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent h-24 resize-none"></textarea>
+                </div>
+
+                <!-- Education -->
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold mb-3 text-gray-700">Education</h3>
+                    <div id="educationContainer">
+                        <div class="education-item border border-gray-200 rounded-lg p-4 mb-3">
+                            <div class="grid md:grid-cols-2 gap-3">
+                                <input type="text" placeholder="Degree" class="education-degree w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                <input type="text" placeholder="Institution" class="education-institution w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                <input type="text" placeholder="Year" class="education-year w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                <input type="text" placeholder="Grade/CGPA" class="education-grade w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            </div>
+                            <button onclick="removeEducation(this)" class="mt-2 text-red-500 hover:text-red-700 text-sm">
+                                <i class="fas fa-trash mr-1"></i>Remove
+                            </button>
+                        </div>
+                    </div>
+                    <button onclick="addEducation()" class="text-blue-500 hover:text-blue-700 text-sm">
+                        <i class="fas fa-plus mr-1"></i>Add Education
+                    </button>
+                </div>
+
+                <!-- Skills -->
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold mb-3 text-gray-700">Technical Skills</h3>
+                    <textarea id="skills" placeholder="Enter your technical skills (e.g., AutoCAD, SolidWorks, MATLAB, Python, etc.)" 
+                              class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent h-20 resize-none"></textarea>
+                </div>
+
+                <!-- Experience -->
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold mb-3 text-gray-700">Work Experience</h3>
+                    <div id="experienceContainer">
+                        <div class="experience-item border border-gray-200 rounded-lg p-4 mb-3">
+                            <div class="grid md:grid-cols-2 gap-3 mb-3">
+                                <input type="text" placeholder="Job Title" class="experience-title w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                <input type="text" placeholder="Company" class="experience-company w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                <input type="text" placeholder="Duration" class="experience-duration w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                <input type="text" placeholder="Location" class="experience-location w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            </div>
+                            <textarea placeholder="Job description and achievements..." class="experience-description w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent h-20 resize-none"></textarea>
+                            <button onclick="removeExperience(this)" class="mt-2 text-red-500 hover:text-red-700 text-sm">
+                                <i class="fas fa-trash mr-1"></i>Remove
+                            </button>
+                        </div>
+                    </div>
+                    <button onclick="addExperience()" class="text-blue-500 hover:text-blue-700 text-sm">
+                        <i class="fas fa-plus mr-1"></i>Add Experience
+                    </button>
+                </div>
+
+                <!-- CAD/CAM Software -->
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold mb-3 text-gray-700">CAD/CAM Software</h3>
+                    <textarea id="cadSoftware" placeholder="List CAD/CAM software you're proficient in (e.g., AutoCAD, SolidWorks, CATIA, Fusion 360, etc.)" 
+                              class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent h-20 resize-none"></textarea>
+                </div>
+
+                <!-- Languages -->
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold mb-3 text-gray-700">Languages</h3>
+                    <div id="languagesContainer">
+                        <div class="language-item flex gap-3 mb-2">
+                            <input type="text" placeholder="Language" class="language-name flex-1 p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            <select class="language-proficiency p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                <option value="Native">Native</option>
+                                <option value="Fluent">Fluent</option>
+                                <option value="Intermediate">Intermediate</option>
+                                <option value="Basic">Basic</option>
                             </select>
-                        </label>
-                        <label for="birth-date">Date of Birth:
-                            <input type="date" id="birth-date" class="mt-1">
-                        </label>
-                        <label for="gender">Gender:
-                            <select id="gender" class="mt-1">
-                                <option value="">Select...</option>
-                                <option value="Male">Male</option>
-                                <option value="Female">Female</option>
-                                <option value="Non-binary">Non-binary</option>
-                                <option value="Prefer not to say">Prefer not to say</option>
-                            </select>
-                        </label>
+                            <button onclick="removeLanguage(this)" class="text-red-500 hover:text-red-700 px-2">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <button onclick="addLanguage()" class="text-blue-500 hover:text-blue-700 text-sm">
+                        <i class="fas fa-plus mr-1"></i>Add Language
+                    </button>
+                </div>
+
+                <!-- Declaration -->
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold mb-3 text-gray-700">Declaration</h3>
+                    <textarea id="declaration" placeholder="I hereby declare that all the information provided above is true to the best of my knowledge..." 
+                              class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent h-20 resize-none"></textarea>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex flex-wrap gap-3">
+                    <button onclick="generateResume()" class="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-lg transition-colors">
+                        <i class="fas fa-eye mr-2"></i>Preview Resume
+                    </button>
+                    <button onclick="downloadPDF()" class="bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-lg transition-colors">
+                        <i class="fas fa-download mr-2"></i>Download PDF
+                    </button>
+                    <button onclick="saveResume()" class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg transition-colors">
+                        <i class="fas fa-save mr-2"></i>Save Resume
+                    </button>
+                    <button onclick="loadResume()" class="bg-yellow-500 hover:bg-yellow-600 text-white px-6 py-3 rounded-lg transition-colors">
+                        <i class="fas fa-upload mr-2"></i>Load Resume
+                    </button>
+                    <button onclick="resetForm()" class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-3 rounded-lg transition-colors">
+                        <i class="fas fa-refresh mr-2"></i>Reset Form
+                    </button>
+                    <button onclick="shareApp()" class="bg-purple-500 hover:bg-purple-600 text-white px-6 py-3 rounded-lg transition-colors">
+                        <i class="fas fa-share mr-2"></i>Share App
+                    </button>
+                </div>
+            </div>
+
+            <!-- Preview Section -->
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <h2 class="text-2xl font-semibold mb-6 text-gray-800 no-print">Resume Preview</h2>
+                
+                <!-- A4 Container -->
+                <div class="a4-container" id="resumePreview">
+                    <div class="a4-content">
+                        <div class="text-center text-gray-500 resume-text">
+                            Click "Preview Resume" to see your resume here
+                        </div>
                     </div>
                 </div>
-            </div>
-
-            <div class="form-section-group">
-                <div class="section">
-                    <h2><i class="fas fa-bullseye"></i> Objective / Summary</h2>
-                    <textarea id="objective" rows="4" placeholder="A concise statement highlighting your career goals, key qualifications, and what you aim to achieve in a new role." class="mt-1"></textarea>
-                </div>
-            </div>
-
-            <div class="form-section-group">
-                <div class="section">
-                    <h2><i class="fas fa-graduation-cap"></i> Education</h2>
-                    <textarea id="education" rows="4" placeholder="List your degrees, universities, locations, and graduation years, each on a new line.&#10;e.g., M.Sc. Computer Science, University of XYZ, City, 2020&#10;B.Sc. Software Engineering, ABC College, City, 2018" class="mt-1"></textarea>
-                </div>
-            </div>
-
-            <div class="form-section-group">
-                <div class="section">
-                    <h2><i class="fas fa-lightbulb"></i> Skills</h2>
-                    <textarea id="skills" rows="4" placeholder="Highlight your skills. Use bullet points or commas.&#10;e.g., - Project Management, Data Analysis&#10;- Python, JavaScript, SQL" class="mt-1"></textarea>
-                </div>
-            </div>
-
-            <div class="form-section-group">
-                <div class="section">
-                    <h2><i class="fas fa-briefcase"></i> Experience</h2>
-                    <textarea id="experience" rows="6" placeholder="Detail work history, most recent first. Newlines for new roles/bullets.&#10;Software Engineer, Tech Solutions Inc., New York, 2021 - Present&#10;- Key achievement 1&#10;- Key achievement 2" class="mt-1"></textarea>
-                </div>
-            </div>
-
-            <div class="form-section-group">
-                <div class="section">
-                    <h2><i class="fas fa-cogs"></i> CAD/CAM Software</h2>
-                    <textarea id="cadcam-software" rows="3" placeholder="List CAD/CAM software you are proficient in.&#10;e.g., AutoCAD, SolidWorks, CATIA, Siemens NX, Fusion 360, Mastercam" class="mt-1"></textarea>
-                </div>
-            </div>
-
-            <div class="form-section-group">
-                <div class="section">
-                    <h2><i class="fas fa-language"></i> Languages</h2>
-                    <textarea id="languages" rows="3" placeholder="List languages and proficiency.&#10;e.g., English (Fluent)&#10;Spanish (Conversational)" class="mt-1"></textarea>
-                </div>
-            </div>
-
-            <div class="form-section-group">
-                <div class="section declaration">
-                    <h2><i class="fas fa-scroll"></i> Declaration</h2>
-                    <textarea id="declaration" rows="3" class="mt-1">I hereby declare that the information provided is true and correct to the best of my knowledge.</textarea>
-                </div>
-            </div>
-
-            <div class="form-actions">
-                <button type="submit" class="btn-primary" id="generate-resume-btn">
-                    <span class="spinner"></span>
-                    <i class="fas fa-magic"></i> Generate Resume
-                </button>
-                <button type="button" id="save-resume-btn" class="btn-primary">
-                    <span class="spinner"></span>
-                    <i class="fas fa-save"></i> Save Resume
-                </button>
-                <button type="button" id="load-resume-btn" class="btn-secondary">
-                    <span class="spinner"></span>
-                    <i class="fas fa-folder-open"></i> Load Resume
-                </button>
-                <button type="button" id="reset-form-btn" class="btn-secondary">
-                    <i class="fas fa-redo-alt"></i> Reset Form
-                </button>
-                <button type="button" id="share-app-btn" class="btn-secondary">
-                    <i class="fas fa-share-alt"></i> Share App
-                </button>
-            </div>
-        </form>
-
-        <div id="resume-output" class="hidden">
-            <h2 class="output-title">Generated Resume Preview</h2>
-            <div id="resume-content-wrapper">
-                <div id="resume-content" class="a4-size">
-                    </div>
-            </div>
-            <div class="output-actions">
-                <button id="download-pdf" class="btn-primary"><i class="fas fa-file-pdf"></i> Download PDF</button>
             </div>
         </div>
     </div>
 
-    <div id="crop-modal" class="modal hidden">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Crop Profile Photo</h3>
-                <button id="close-modal" class="text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
+    <!-- Photo Cropper Modal -->
+    <div id="cropperModal" class="cropper-modal hidden">
+        <div class="cropper-container-wrapper">
+            <div class="mb-4">
+                <h3 class="text-lg font-semibold">Crop Your Photo</h3>
             </div>
-            <div class="modal-body">
-                <img id="imageToCrop" src="" alt="Image to crop">
+            <div class="cropper-container">
+                <img id="cropperImage" style="max-width: 100%;">
             </div>
-            <div class="modal-footer">
-                <button id="confirm-crop" class="btn-primary"><i class="fas fa-check"></i> Confirm Crop</button>
+            <div class="flex justify-end space-x-3 mt-4">
+                <button onclick="cancelCrop()" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded">
+                    Cancel
+                </button>
+                <button onclick="applyCrop()" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">
+                    Apply
+                </button>
             </div>
         </div>
     </div>
-
-    <div id="message-box" class="message-box hidden"></div>
-
-    <div id="confetti-container"></div>
-
-    <footer class="credits">
-        Built with passion by <a href="https://www.instagram.com/nishix_vamp/" target="_blank" rel="noopener noreferrer">nishix_vamp</a>
-    </footer>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
     <script>
-        // DOM Elements
-        const resumeForm = document.getElementById('resume-form');
-        const photoInput = document.getElementById('photo');
-        const photoPreviewBox = document.getElementById('photo-preview-box');
-        const photoPlaceholder = document.getElementById('photo-placeholder');
-        const imageToCrop = document.getElementById('imageToCrop');
-        const imageToCropPreview = document.getElementById('imageToCropPreview');
-        const cropModal = document.getElementById('crop-modal');
-        const closeModalBtn = document.getElementById('close-modal');
-        const confirmCropBtn = document.getElementById('confirm-crop');
-        const generateResumeBtn = document.getElementById('generate-resume-btn');
-        const resetFormBtn = document.getElementById('reset-form-btn');
-        const resumeOutput = document.getElementById('resume-output');
-        const resumeContent = document.getElementById('resume-content');
-        const downloadPdfBtn = document.getElementById('download-pdf');
-        const messageBox = document.getElementById('message-box');
-        const saveResumeBtn = document.getElementById('save-resume-btn');
-        const loadResumeBtn = document.getElementById('load-resume-btn');
-        const confettiContainer = document.getElementById('confetti-container');
-        const shareAppBtn = document.getElementById('share-app-btn'); // New share button
+        let cropper;
+        let croppedImageData = null;
 
-
-        let cropper; // Cropper.js instance
-        let croppedImageBase64 = null; // To store the cropped image as a Base64 string
-
-        // --- Utility Functions ---
-
-        /**
-         * Displays a temporary message box.
-         * @param {string} message - The message to display.
-         * @param {'success'|'error'|'info'} type - The type of message (for styling).
-         */
-        function showMessage(message, type = 'info') {
-            messageBox.textContent = message;
-            messageBox.className = `message-box show ${type}`;
-            messageBox.classList.remove('hidden');
-            setTimeout(() => {
-                messageBox.classList.remove('show');
-                messageBox.classList.add('hidden');
-            }, 3000);
-        }
-
-        /**
-         * Toggles the loading state of a button.
-         * @param {HTMLButtonElement} button - The button element.
-         * @param {boolean} isLoading - True to show loading, false to hide.
-         */
-        function toggleLoading(button, isLoading) {
-            const spinnerElement = button.querySelector('.spinner');
-            if (isLoading) {
-                button.classList.add('loading');
-                button.disabled = true;
-                if (spinnerElement) {
-                    spinnerElement.style.display = 'inline-block';
-                }
-            } else {
-                button.classList.remove('loading');
-                button.disabled = false;
-                if (spinnerElement) {
-                    spinnerElement.style.display = 'none';
-                }
-            }
-        }
-
-        /**
-         * Triggers a confetti animation.
-         */
-        function launchConfetti() {
-            const colors = ['#f44336', '#e91e63', '#9c27b0', '#673ab7', '#3f51b5', '#2196f3', '#03a9f4', '#00bcd4', '#009688', '#4CAF50', '#8BC34A', '#CDDC39', '#FFEB3B', '#FFC107', '#FF9800', '#FF5722', '#795548', '#9E9E9E', '#607D8B'];
-            const numConfetti = 50; // Number of confetti pieces
-
-            for (let i = 0; i < numConfetti; i++) {
-                const confetti = document.createElement('div');
-                confetti.classList.add('confetti');
-                confetti.style.setProperty('--confetti-color', colors[Math.floor(Math.random() * colors.length)]);
-                confetti.style.left = `${Math.random() * 100}vw`;
-                confetti.style.animationDelay = `${Math.random() * 0.5}s`; // Stagger animation
-                confettiContainer.appendChild(confetti);
-
-                // Remove confetti after animation to prevent DOM clutter
-                confetti.addEventListener('animationend', () => {
-                    confetti.remove();
-                });
-            }
-        }
-
-        // --- Photo Cropping Logic ---
-
-        photoPreviewBox.addEventListener('click', () => photoInput.click());
-
-        photoInput.addEventListener('change', (event) => {
-            const file = event.target.files[0];
+        // Photo upload and cropping
+        document.getElementById('photoUpload').addEventListener('change', function(e) {
+            const file = e.target.files[0];
             if (file) {
                 const reader = new FileReader();
-                reader.onload = (e) => {
-                    imageToCrop.src = e.target.result;
-                    cropModal.classList.remove('hidden');
+                reader.onload = function(e) {
+                    const img = document.getElementById('cropperImage');
+                    img.src = e.target.result;
+                    document.getElementById('cropperModal').classList.remove('hidden');
+                    
                     if (cropper) {
-                        cropper.destroy(); // Destroy previous instance if exists
+                        cropper.destroy();
                     }
-                    // Initialize Cropper.js once the image is loaded
-                    imageToCrop.onload = () => {
-                        cropper = new Cropper(imageToCrop, {
-                            aspectRatio: 1, // Square aspect ratio for profile photo
-                            viewMode: 1, // Restrict the crop box to not exceed the canvas
-                            movable: true,
-                            zoomable: true,
-                            rotatable: false,
-                            scalable: false,
-                            background: false,
-                            autoCropArea: 0.8 // 80% of the image
-                        });
-                    };
+                    
+                    cropper = new Cropper(img, {
+                        aspectRatio: 1,
+                        viewMode: 1,
+                        minCropBoxWidth: 100,
+                        minCropBoxHeight: 100,
+                    });
                 };
                 reader.readAsDataURL(file);
             }
         });
 
-        closeModalBtn.addEventListener('click', () => {
-            cropModal.classList.add('hidden');
-            if (cropper) {
-                cropper.destroy(); // Clean up cropper instance
-            }
-            photoInput.value = ''; // Clear file input
-        });
-
-        confirmCropBtn.addEventListener('click', () => {
-            if (cropper) {
-                // Get cropped canvas as a Data URL (Base64 string)
-                croppedImageBase64 = cropper.getCroppedCanvas({
-                    width: 250, // Desired width for the cropped image
-                    height: 250, // Desired height for the cropped image
-                    fillColor: '#fff' // Background color for transparent areas
-                }).toDataURL('image/png'); // Use PNG for better quality with transparency
-
-                // Update the preview box
-                imageToCropPreview.src = croppedImageBase64;
-                imageToCropPreview.classList.remove('hidden');
-                photoPlaceholder.classList.add('hidden');
-
-                cropModal.classList.add('hidden');
-                cropper.destroy(); // Clean up cropper instance
-                showMessage('Photo cropped successfully!', 'success');
-            } else {
-                showMessage('No image to crop.', 'error');
-            }
-        });
-
-        // --- Form Submission and Resume Generation ---
-
-        resumeForm.addEventListener('submit', (event) => {
-            event.preventDefault();
-            toggleLoading(generateResumeBtn, true);
-
-            const fullName = document.getElementById('full-name').value;
-            const designation = document.getElementById('designation').value;
-            const email = document.getElementById('email').value;
-            const phone = document.getElementById('phone').value;
-            const address = document.getElementById('address').value;
-            const maritalStatus = document.getElementById('marital-status').value;
-            const birthDate = document.getElementById('birth-date').value;
-            const gender = document.getElementById('gender').value;
-            const objective = document.getElementById('objective').value;
-            const education = document.getElementById('education').value;
-            const skills = document.getElementById('skills').value;
-            const experience = document.getElementById('experience').value;
-            const cadcamSoftware = document.getElementById('cadcam-software').value;
-            const languages = document.getElementById('languages').value;
-            const declaration = document.getElementById('declaration').value;
-
-            // Basic validation
-            if (!fullName || !designation || !email || !phone || !address || !objective || !education || !skills || !experience) {
-                showMessage('Please fill in all required fields.', 'error');
-                toggleLoading(generateResumeBtn, false);
-                return;
-            }
-
-            let resumeHtml = `
-                <div class="flex flex-col md:flex-row items-center md:items-start gap-6 mb-8 p-4 bg-light rounded-lg">
-                    <div class="w-32 h-32 rounded-full overflow-hidden border-4 border-primary shadow-lg flex-shrink-0">
-                        ${croppedImageBase64 ? `<img src="${croppedImageBase64}" alt="Profile Photo" class="w-full h-full object-cover">` : `<div class="w-full h-full bg-gray-300 flex items-center justify-center text-gray-600 text-5xl"><i class="fas fa-user-circle"></i></div>`}
-                    </div>
-                    <div class="text-center md:text-left flex-grow">
-                        <h1 class="text-4xl font-bold text-dark mb-1">${fullName}</h1>
-                        <p class="text-xl font-semibold text-dark mb-2">${designation}</p>
-                        <div class="flex flex-wrap justify-center md:justify-start gap-x-4 text-gray-700 text-sm">
-                            <p><i class="fas fa-envelope mr-1"></i> ${email}</p>
-                            <p><i class="fas fa-phone mr-1"></i> ${phone}</p>
-                            <p><i class="fas fa-map-marker-alt mr-1"></i> ${address}</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div class="md:col-span-2">
-                        <h3>Objective / Summary</h3>
-                        <p>${objective.replace(/\n/g, '<br>')}</p>
-
-                        <h3>Experience</h3>
-                        ${experience.split('\n\n').map(job => `
-                            <div class="mb-4">
-                                <p class="font-semibold text-dark">${job.split('\n')[0]}</p>
-                                <ul class="list-disc list-inside ml-4 text-sm">
-                                    ${job.split('\n').slice(1).map(item => `<li>${item.replace(/^- /, '')}</li>`).join('')}
-                                </ul>
-                            </div>
-                        `).join('')}
-
-                        <h3>Education</h3>
-                        <p>${education.replace(/\n/g, '<br>')}</p>
-                    </div>
-
-                    <div class="md:col-span-1">
-                        <h3>Personal Details</h3>
-                        <div class="text-sm space-y-1 mb-4">
-                            <p><strong>Marital Status:</strong> ${maritalStatus}</p>
-                            <p><strong>Date of Birth:</strong> ${birthDate}</p>
-                            <p><strong>Gender:</strong> ${gender}</p>
-                        </div>
-
-                        <h3>Skills</h3>
-                        <div class="flex flex-wrap gap-2 mb-4">
-                            ${skills.split('\n').filter(s => s.trim() !== '').map(skillGroup => `
-                                <span class="text-dark text-xs font-semibold">${skillGroup.replace(/^- /, '').trim()}</span>
-                            `).join(', ')}
-                        </div>
-
-                        <h3>CAD/CAM Software</h3>
-                        <div class="flex flex-wrap gap-2 mb-4">
-                            ${cadcamSoftware.split(',').filter(s => s.trim() !== '').map(software => `
-                                <span class="text-dark text-xs font-semibold">${software.trim()}</span>
-                            `).join(', ')}
-                        </div>
-
-                        <h3>Languages</h3>
-                        <div class="text-sm space-y-1 mb-4">
-                            ${languages.split('\n').filter(s => s.trim() !== '').map(lang => `<p>${lang.trim()}</p>`).join('')}
-                        </div>
-                    </div>
-                </div>
-
-                <div class="mt-8 pt-4 border-t border-gray-200 text-center text-sm text-gray-600">
-                    <h3>Declaration</h3>
-                    <p>${declaration.replace(/\n/g, '<br>')}</p>
-                </div>
-            `;
-
-            resumeContent.innerHTML = resumeHtml;
-            resumeOutput.classList.remove('hidden');
-            resumeForm.classList.add('hidden');
-            toggleLoading(generateResumeBtn, false);
-            showMessage('Resume generated successfully!', 'success');
-            launchConfetti(); // Launch confetti on successful generation
-        });
-
-        // --- Reset Form ---
-
-        resetFormBtn.addEventListener('click', () => {
-            resumeForm.reset();
-            croppedImageBase64 = null;
-            imageToCropPreview.src = '';
-            imageToCropPreview.classList.add('hidden');
-            photoPlaceholder.classList.remove('hidden');
+        function cancelCrop() {
+            document.getElementById('cropperModal').classList.add('hidden');
             if (cropper) {
                 cropper.destroy();
             }
-            resumeOutput.classList.add('hidden');
-            resumeForm.classList.remove('hidden');
-            showMessage('Form reset.', 'info');
-        });
+        }
 
-        // --- Download PDF ---
+        function applyCrop() {
+            if (cropper) {
+                const canvas = cropper.getCroppedCanvas({
+                    width: 200,
+                    height: 200,
+                });
+                
+                croppedImageData = canvas.toDataURL();
+                
+                const preview = document.getElementById('photoPreview');
+                preview.innerHTML = `<img src="${croppedImageData}" class="w-full h-full object-cover rounded-lg">`;
+                
+                document.getElementById('cropperModal').classList.add('hidden');
+                cropper.destroy();
+                
+                confetti({
+                    particleCount: 100,
+                    spread: 70,
+                    origin: { y: 0.6 }
+                });
+            }
+        }
 
-        downloadPdfBtn.addEventListener('click', () => {
-            toggleLoading(downloadPdfBtn, true);
-            const element = document.getElementById('resume-content');
-            const pdf = new jspdf.jsPDF('p', 'mm', 'a4'); // 'p' for portrait, 'mm' for millimeters, 'a4' for A4 size
+        // Dynamic form functions
+        function addEducation() {
+            const container = document.getElementById('educationContainer');
+            const div = document.createElement('div');
+            div.className = 'education-item border border-gray-200 rounded-lg p-4 mb-3';
+            div.innerHTML = `
+                <div class="grid md:grid-cols-2 gap-3">
+                    <input type="text" placeholder="Degree" class="education-degree w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    <input type="text" placeholder="Institution" class="education-institution w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    <input type="text" placeholder="Year" class="education-year w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    <input type="text" placeholder="Grade/CGPA" class="education-grade w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                </div>
+                <button onclick="removeEducation(this)" class="mt-2 text-red-500 hover:text-red-700 text-sm">
+                    <i class="fas fa-trash mr-1"></i>Remove
+                </button>
+            `;
+            container.appendChild(div);
+        }
 
-            // Temporarily apply styles to ensure accurate measurement for html2canvas
-            // Save original styles to revert later
-            const originalStyles = {
-                display: element.style.display,
-                position: element.style.position,
-                width: element.style.width,
-                height: element.style.height,
-                padding: element.style.padding,
-                boxSizing: element.style.boxSizing,
-                overflow: element.style.overflow
+        function removeEducation(button) {
+            button.closest('.education-item').remove();
+        }
+
+        function addExperience() {
+            const container = document.getElementById('experienceContainer');
+            const div = document.createElement('div');
+            div.className = 'experience-item border border-gray-200 rounded-lg p-4 mb-3';
+            div.innerHTML = `
+                <div class="grid md:grid-cols-2 gap-3 mb-3">
+                    <input type="text" placeholder="Job Title" class="experience-title w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    <input type="text" placeholder="Company" class="experience-company w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    <input type="text" placeholder="Duration" class="experience-duration w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    <input type="text" placeholder="Location" class="experience-location w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                </div>
+                <textarea placeholder="Job description and achievements..." class="experience-description w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent h-20 resize-none"></textarea>
+                <button onclick="removeExperience(this)" class="mt-2 text-red-500 hover:text-red-700 text-sm">
+                    <i class="fas fa-trash mr-1"></i>Remove
+                </button>
+            `;
+            container.appendChild(div);
+        }
+
+        function removeExperience(button) {
+            button.closest('.experience-item').remove();
+        }
+
+        function addLanguage() {
+            const container = document.getElementById('languagesContainer');
+            const div = document.createElement('div');
+            div.className = 'language-item flex gap-3 mb-2';
+            div.innerHTML = `
+                <input type="text" placeholder="Language" class="language-name flex-1 p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                <select class="language-proficiency p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    <option value="Native">Native</option>
+                    <option value="Fluent">Fluent</option>
+                    <option value="Intermediate">Intermediate</option>
+                    <option value="Basic">Basic</option>
+                </select>
+                <button onclick="removeLanguage(this)" class="text-red-500 hover:text-red-700 px-2">
+                    <i class="fas fa-trash"></i>
+                </button>
+            `;
+            container.appendChild(div);
+        }
+
+        function removeLanguage(button) {
+            button.closest('.language-item').remove();
+        }
+
+        // Generate resume preview
+        function generateResume() {
+            const resumePreview = document.getElementById('resumePreview');
+            
+            // Collect form data
+            const data = {
+                fullName: document.getElementById('fullName').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                location: document.getElementById('location').value,
+                linkedin: document.getElementById('linkedin').value,
+                github: document.getElementById('github').value,
+                objective: document.getElementById('objective').value,
+                skills: document.getElementById('skills').value,
+                cadSoftware: document.getElementById('cadSoftware').value,
+                declaration: document.getElementById('declaration').value,
+                photo: croppedImageData
             };
 
-            element.style.display = 'block';
-            element.style.position = 'absolute';
-            element.style.width = '210mm'; // Set to A4 width for consistent rendering
-            element.style.height = 'auto'; // Let content determine height
-            element.style.padding = '1cm'; // Match print media query padding
-            element.style.boxSizing = 'border-box';
-            element.style.overflow = 'hidden';
+            // Collect education data
+            const educationItems = document.querySelectorAll('.education-item');
+            data.education = Array.from(educationItems).map(item => ({
+                degree: item.querySelector('.education-degree').value,
+                institution: item.querySelector('.education-institution').value,
+                year: item.querySelector('.education-year').value,
+                grade: item.querySelector('.education-grade').value
+            })).filter(edu => edu.degree || edu.institution);
 
-            // Revert original styles immediately (important!)
-            // This needs to happen before html2canvas to avoid layout shifts affecting the screenshot
-            // but after we've read the initial dimensions.
-            // For now, let's keep it here and see if it causes issues.
-            // A safer approach might be to clone the element, style the clone, render the clone, then delete the clone.
-            // But for simplicity and common usage, this pattern is often used.
-            const contentWidthPx = element.offsetWidth;
-            const contentHeightPx = element.offsetHeight;
+            // Collect experience data
+            const experienceItems = document.querySelectorAll('.experience-item');
+            data.experience = Array.from(experienceItems).map(item => ({
+                title: item.querySelector('.experience-title').value,
+                company: item.querySelector('.experience-company').value,
+                duration: item.querySelector('.experience-duration').value,
+                location: item.querySelector('.experience-location').value,
+                description: item.querySelector('.experience-description').value
+            })).filter(exp => exp.title || exp.company);
 
-            for (const prop in originalStyles) {
-                element.style[prop] = originalStyles[prop];
-            }
+            // Collect languages data
+            const languageItems = document.querySelectorAll('.language-item');
+            data.languages = Array.from(languageItems).map(item => ({
+                name: item.querySelector('.language-name').value,
+                proficiency: item.querySelector('.language-proficiency').value
+            })).filter(lang => lang.name);
 
-            const pdfWidthMm = pdf.internal.pageSize.getWidth();
-            const pdfHeightMm = pdf.internal.pageSize.getHeight();
-            const marginMm = 10;
+            // Generate HTML
+            resumePreview.innerHTML = `
+                <div class="a4-content">
+                    <!-- Header Section -->
+                    <div class="flex items-start justify-between mb-4">
+                        <div class="flex-1">
+                            <h1 class="resume-title font-bold text-gray-800 mb-1">${data.fullName || 'Your Name'}</h1>
+                            <p class="resume-subtitle text-gray-600 mb-2">Mechanical Engineer</p>
+                            <div class="resume-small-text text-gray-600 space-y-1">
+                                ${data.email ? `<div><i class="fas fa-envelope w-4"></i> ${data.email}</div>` : ''}
+                                ${data.phone ? `<div><i class="fas fa-phone w-4"></i> ${data.phone}</div>` : ''}
+                                ${data.location ? `<div><i class="fas fa-map-marker-alt w-4"></i> ${data.location}</div>` : ''}
+                                ${data.linkedin ? `<div><i class="fab fa-linkedin w-4"></i> ${data.linkedin}</div>` : ''}
+                                ${data.github ? `<div><i class="fab fa-github w-4"></i> ${data.github}</div>` : ''}
+                            </div>
+                        </div>
+                        ${data.photo ? `<div class="ml-4"><img src="${data.photo}" class="profile-photo"></div>` : ''}
+                    </div>
 
-            const printableWidthMm = pdfWidthMm - (2 * marginMm);
-            const printableHeightMm = pdfHeightMm - (2 * marginMm);
+                    <!-- Objective Section -->
+                    ${data.objective ? `
+                        <div class="resume-section">
+                            <h2 class="resume-section-title font-semibold text-gray-800 border-b border-gray-300 pb-1">OBJECTIVE</h2>
+                            <p class="resume-text text-gray-700">${data.objective}</p>
+                        </div>
+                    ` : ''}
 
-            // Use a high fixed scale for html2canvas to ensure high quality.
-            // This creates a large canvas image.
-            const html2canvasFixedScale = 4; // Experiment with 3, 4, 5 for best balance of quality/file size
+                    <!-- Education Section -->
+                    ${data.education.length > 0 ? `
+                        <div class="resume-section">
+                            <h2 class="resume-section-title font-semibold text-gray-800 border-b border-gray-300 pb-1">EDUCATION</h2>
+                            ${data.education.map(edu => `
+                                <div class="resume-item">
+                                    <div class="flex justify-between items-start">
+                                        <div>
+                                            <h3 class="resume-text font-semibold text-gray-800">${edu.degree}</h3>
+                                            <p class="resume-small-text text-gray-600">${edu.institution}</p>
+                                        </div>
+                                        <div class="text-right">
+                                            <p class="resume-small-text text-gray-600">${edu.year}</p>
+                                            ${edu.grade ? `<p class="resume-small-text text-gray-600">${edu.grade}</p>` : ''}
+                                        </div>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    ` : ''}
 
-            html2canvas(element, {
-                scale: html2canvasFixedScale,
-                useCORS: true,
-                logging: false,
-                allowTaint: true,
-                removeContainer: true,
-            }).then(canvas => {
-                const imgData = canvas.toDataURL('image/png');
-                const imgProps = pdf.getImageProperties(imgData); // This gives original pixel dimensions of the canvas
+                    <!-- Technical Skills Section -->
+                    ${data.skills ? `
+                        <div class="resume-section">
+                            <h2 class="resume-section-title font-semibold text-gray-800 border-b border-gray-300 pb-1">TECHNICAL SKILLS</h2>
+                            <div class="skills-grid">
+                                ${data.skills.split(',').map(skill => `
+                                    <span class="resume-small-text bg-gray-100 px-2 py-1 rounded text-gray-700">${skill.trim()}</span>
+                                `).join('')}
+                            </div>
+                        </div>
+                    ` : ''}
 
-                // Calculate the aspect ratio of the generated image
-                const aspectRatio = imgProps.width / imgProps.height;
+                    <!-- CAD/CAM Software Section -->
+                    ${data.cadSoftware ? `
+                        <div class="resume-section">
+                            <h2 class="resume-section-title font-semibold text-gray-800 border-b border-gray-300 pb-1">CAD/CAM SOFTWARE</h2>
+                            <div class="skills-grid">
+                                ${data.cadSoftware.split(',').map(software => `
+                                    <span class="resume-small-text bg-blue-100 px-2 py-1 rounded text-blue-700">${software.trim()}</span>
+                                `).join('')}
+                            </div>
+                        </div>
+                    ` : ''}
 
-                // Determine the dimensions to fit the image into the printable area while preserving aspect ratio
-                let imgWidthPdf;
-                let imgHeightPdf;
+                    <!-- Work Experience Section -->
+                    ${data.experience.length > 0 ? `
+                        <div class="resume-section">
+                            <h2 class="resume-section-title font-semibold text-gray-800 border-b border-gray-300 pb-1">WORK EXPERIENCE</h2>
+                            ${data.experience.map(exp => `
+                                <div class="resume-item">
+                                    <div class="flex justify-between items-start mb-1">
+                                        <div>
+                                            <h3 class="resume-text font-semibold text-gray-800">${exp.title}</h3>
+                                            <p class="resume-small-text text-gray-600">${exp.company}${exp.location ? `, ${exp.location}` : ''}</p>
+                                        </div>
+                                        <p class="resume-small-text text-gray-600">${exp.duration}</p>
+                                    </div>
+                                    ${exp.description ? `<p class="resume-small-text text-gray-700">${exp.description}</p>` : ''}
+                                </div>
+                            `).join('')}
+                        </div>
+                    ` : ''}
 
-                // Option 1: Fit to width, then check height
-                imgWidthPdf = printableWidthMm;
-                imgHeightPdf = imgWidthPdf / aspectRatio;
+                    <!-- Languages Section -->
+                    ${data.languages.length > 0 ? `
+                        <div class="resume-section">
+                            <h2 class="resume-section-title font-semibold text-gray-800 border-b border-gray-300 pb-1">LANGUAGES</h2>
+                            <div class="grid grid-cols-2 gap-2">
+                                ${data.languages.map(lang => `
+                                    <div class="language-item">
+                                        <span class="resume-small-text text-gray-700">${lang.name}</span>
+                                        <span class="resume-small-text text-gray-500">${lang.proficiency}</span>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    ` : ''}
 
-                if (imgHeightPdf > printableHeightMm) {
-                    // If fitting to width makes it too tall, then fit to height
-                    imgHeightPdf = printableHeightMm;
-                    imgWidthPdf = imgHeightPdf * aspectRatio;
-                }
+                    <!-- Declaration Section -->
+                    ${data.declaration ? `
+                        <div class="resume-section mt-auto">
+                            <h2 class="resume-section-title font-semibold text-gray-800 border-b border-gray-300 pb-1">DECLARATION</h2>
+                            <p class="resume-small-text text-gray-700">${data.declaration}</p>
+                        </div>
+                    ` : ''}
+                </div>
+            `;
 
-                // Center the image within the printable area
-                const xOffset = marginMm + (printableWidthMm - imgWidthPdf) / 2;
-                const yOffset = marginMm + (printableHeightMm - imgHeightPdf) / 2;
-
-                pdf.addImage(imgData, 'PNG', xOffset, yOffset, imgWidthPdf, imgHeightPdf);
-
-                pdf.save('elite-resume.pdf');
-                toggleLoading(downloadPdfBtn, false);
-                showMessage('Resume downloaded as PDF!', 'success');
-                launchConfetti();
-            }).catch(error => {
-                console.error("Error generating PDF:", error);
-                showMessage('Failed to download PDF. Please try again.', 'error');
-                toggleLoading(downloadPdfBtn, false);
+            confetti({
+                particleCount: 100,
+                spread: 70,
+                origin: { y: 0.6 }
             });
-        });
+        }
 
-        // --- Local Storage Save/Load ---
+        // Download PDF function
+        async function downloadPDF() {
+            const { jsPDF } = window.jspdf;
+            const element = document.getElementById('resumePreview');
+            
+            if (!element.innerHTML.includes('a4-content') || element.innerHTML.includes('Click "Preview Resume"')) {
+                alert('Please generate the resume preview first!');
+                return;
+            }
 
-        const LOCAL_STORAGE_KEY = 'eliteResumeData';
-
-        saveResumeBtn.addEventListener('click', () => {
-            toggleLoading(saveResumeBtn, true);
             try {
-                const resumeData = {
-                    fullName: document.getElementById('full-name').value,
-                    designation: document.getElementById('designation').value,
-                    email: document.getElementById('email').value,
-                    phone: document.getElementById('phone').value,
-                    address: document.getElementById('address').value,
-                    maritalStatus: document.getElementById('marital-status').value,
-                    birthDate: document.getElementById('birth-date').value,
-                    gender: document.getElementById('gender').value,
-                    objective: document.getElementById('objective').value,
-                    education: document.getElementById('education').value,
-                    skills: document.getElementById('skills').value,
-                    experience: document.getElementById('experience').value,
-                    cadcamSoftware: document.getElementById('cadcam-software').value,
-                    languages: document.getElementById('languages').value,
-                    declaration: document.getElementById('declaration').value,
-                    photo: croppedImageBase64 // Store Base64 string directly
-                };
+                // Create canvas from the resume element
+                const canvas = await html2canvas(element, {
+                    scale: 2,
+                    useCORS: true,
+                    allowTaint: true,
+                    backgroundColor: '#ffffff',
+                    width: 794, // A4 width in pixels at 96 DPI
+                    height: 1123 // A4 height in pixels at 96 DPI
+                });
 
-                localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(resumeData));
-                showMessage('Resume data saved to local storage!', 'success');
+                // Create PDF with A4 dimensions
+                const pdf = new jsPDF('p', 'mm', 'a4');
+                const imgData = canvas.toDataURL('image/png');
+                
+                // Add image to PDF (A4 size: 210mm x 297mm)
+                pdf.addImage(imgData, 'PNG', 0, 0, 210, 297);
+                
+                // Download the PDF
+                const fileName = document.getElementById('fullName').value || 'Resume';
+                pdf.save(`${fileName}_Resume.pdf`);
+
+                confetti({
+                    particleCount: 100,
+                    spread: 70,
+                    origin: { y: 0.6 }
+                });
             } catch (error) {
-                console.error("Error saving resume data to local storage:", error);
-                showMessage('Failed to save resume data: ' + error.message, 'error');
-            } finally {
-                toggleLoading(saveResumeBtn, false);
+                console.error('Error generating PDF:', error);
+                alert('Error generating PDF. Please try again.');
             }
-        });
+        }
 
-        loadResumeBtn.addEventListener('click', () => {
-            toggleLoading(loadResumeBtn, true);
-            try {
-                const storedData = localStorage.getItem(LOCAL_STORAGE_KEY);
+        // Save resume data
+        function saveResume() {
+            const data = {
+                fullName: document.getElementById('fullName').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                location: document.getElementById('location').value,
+                linkedin: document.getElementById('linkedin').value,
+                github: document.getElementById('github').value,
+                objective: document.getElementById('objective').value,
+                skills: document.getElementById('skills').value,
+                cadSoftware: document.getElementById('cadSoftware').value,
+                declaration: document.getElementById('declaration').value,
+                photo: croppedImageData
+            };
 
-                if (storedData) {
-                    const data = JSON.parse(storedData);
-                    document.getElementById('full-name').value = data.fullName || '';
-                    document.getElementById('designation').value = data.designation || '';
-                    document.getElementById('email').value = data.email || '';
-                    document.getElementById('phone').value = data.phone || '';
-                    document.getElementById('address').value = data.address || '';
-                    document.getElementById('marital-status').value = data.maritalStatus || '';
-                    document.getElementById('birth-date').value = data.birthDate || '';
-                    document.getElementById('gender').value = data.gender || '';
-                    document.getElementById('objective').value = data.objective || '';
-                    document.getElementById('education').value = data.education || '';
-                    document.getElementById('skills').value = data.skills || '';
-                    document.getElementById('experience').value = data.experience || '';
-                    document.getElementById('cadcam-software').value = data.cadcamSoftware || '';
-                    document.getElementById('languages').value = data.languages || '';
-                    document.getElementById('declaration').value = data.declaration || '';
+            // Save education data
+            const educationItems = document.querySelectorAll('.education-item');
+            data.education = Array.from(educationItems).map(item => ({
+                degree: item.querySelector('.education-degree').value,
+                institution: item.querySelector('.education-institution').value,
+                year: item.querySelector('.education-year').value,
+                grade: item.querySelector('.education-grade').value
+            }));
 
-                    if (data.photo) {
-                        croppedImageBase64 = data.photo;
-                        imageToCropPreview.src = croppedImageBase64;
-                        imageToCropPreview.classList.remove('hidden');
-                        photoPlaceholder.classList.add('hidden');
-                    } else {
-                        croppedImageBase64 = null;
-                        imageToCropPreview.src = '';
-                        imageToCropPreview.classList.add('hidden');
-                        photoPlaceholder.classList.remove('hidden');
-                    }
-                    showMessage('Resume data loaded from local storage!', 'success');
-                } else {
-                    showMessage('No saved resume data found in local storage.', 'info');
-                }
-            } catch (error) {
-                console.error("Error loading resume data from local storage:", error);
-                showMessage('Failed to load resume data: ' + error.message, 'error');
-            } finally {
-                toggleLoading(loadResumeBtn, false);
+            // Save experience data
+            const experienceItems = document.querySelectorAll('.experience-item');
+            data.experience = Array.from(experienceItems).map(item => ({
+                title: item.querySelector('.experience-title').value,
+                company: item.querySelector('.experience-company').value,
+                duration: item.querySelector('.experience-duration').value,
+                location: item.querySelector('.experience-location').value,
+                description: item.querySelector('.experience-description').value
+            }));
+
+            // Save languages data
+            const languageItems = document.querySelectorAll('.language-item');
+            data.languages = Array.from(languageItems).map(item => ({
+                name: item.querySelector('.language-name').value,
+                proficiency: item.querySelector('.language-proficiency').value
+            }));
+
+            localStorage.setItem('resumeData', JSON.stringify(data));
+            alert('Resume saved successfully!');
+            
+            confetti({
+                particleCount: 100,
+                spread: 70,
+                origin: { y: 0.6 }
+            });
+        }
+
+        // Load resume data
+        function loadResume() {
+            const savedData = localStorage.getItem('resumeData');
+            if (!savedData) {
+                alert('No saved resume found!');
+                return;
             }
-        });
 
-        // Optional: Load data on page load for convenience
-        document.addEventListener('DOMContentLoaded', () => {
-            try {
-                const storedData = localStorage.getItem(LOCAL_STORAGE_KEY);
-                if (storedData) {
-                    const data = JSON.parse(storedData);
-                    // Only populate fields if data exists
-                    document.getElementById('full-name').value = data.fullName || '';
-                    document.getElementById('designation').value = data.designation || '';
-                    document.getElementById('email').value = data.email || '';
-                    document.getElementById('phone').value = data.phone || '';
-                    document.getElementById('address').value = data.address || '';
-                    document.getElementById('marital-status').value = data.maritalStatus || '';
-                    document.getElementById('birth-date').value = data.birthDate || '';
-                    document.getElementById('gender').value = data.gender || '';
-                    document.getElementById('objective').value = data.objective || '';
-                    document.getElementById('education').value = data.education || '';
-                    document.getElementById('skills').value = data.skills || '';
-                    document.getElementById('experience').value = data.experience || '';
-                    document.getElementById('cadcam-software').value = data.cadcamSoftware || '';
-                    document.getElementById('languages').value = data.languages || '';
-                    document.getElementById('declaration').value = data.declaration || '';
+            const data = JSON.parse(savedData);
 
-                    if (data.photo) {
-                        croppedImageBase64 = data.photo;
-                        imageToCropPreview.src = croppedImageBase64;
-                        imageToCropPreview.classList.remove('hidden');
-                        photoPlaceholder.classList.add('hidden');
-                    }
-                    showMessage('Loaded previous data from local storage!', 'info');
-                }
-            } catch (error) {
-                console.warn("Could not load data from local storage on startup:", error);
-                localStorage.removeItem(LOCAL_STORAGE_KEY); // Clear potentially corrupted data
+            // Load basic fields
+            document.getElementById('fullName').value = data.fullName || '';
+            document.getElementById('email').value = data.email || '';
+            document.getElementById('phone').value = data.phone || '';
+            document.getElementById('location').value = data.location || '';
+            document.getElementById('linkedin').value = data.linkedin || '';
+            document.getElementById('github').value = data.github || '';
+            document.getElementById('objective').value = data.objective || '';
+            document.getElementById('skills').value = data.skills || '';
+            document.getElementById('cadSoftware').value = data.cadSoftware || '';
+            document.getElementById('declaration').value = data.declaration || '';
+
+            // Load photo
+            if (data.photo) {
+                croppedImageData = data.photo;
+                const preview = document.getElementById('photoPreview');
+                preview.innerHTML = `<img src="${data.photo}" class="w-full h-full object-cover rounded-lg">`;
             }
-        });
 
-        // --- Share App Logic ---
-        shareAppBtn.addEventListener('click', () => {
-            // Get the current URL
-            const appUrl = window.location.href;
-
-            // Use document.execCommand('copy') for better compatibility in iframes
-            const tempInput = document.createElement('textarea');
-            tempInput.value = appUrl;
-            document.body.appendChild(tempInput);
-            tempInput.select();
-            try {
-                document.execCommand('copy');
-                showMessage('App link copied to clipboard!', 'success');
-            } catch (err) {
-                console.error('Failed to copy text: ', err);
-                showMessage('Failed to copy link. Please copy manually: ' + appUrl, 'error');
-            } finally {
-                document.body.removeChild(tempInput);
+            // Load education data
+            if (data.education) {
+                const container = document.getElementById('educationContainer');
+                container.innerHTML = '';
+                data.education.forEach(edu => {
+                    addEducation();
+                    const items = container.querySelectorAll('.education-item');
+                    const lastItem = items[items.length - 1];
+                    lastItem.querySelector('.education-degree').value = edu.degree || '';
+                    lastItem.querySelector('.education-institution').value = edu.institution || '';
+                    lastItem.querySelector('.education-year').value = edu.year || '';
+                    lastItem.querySelector('.education-grade').value = edu.grade || '';
+                });
             }
+
+            // Load experience data
+            if (data.experience) {
+                const container = document.getElementById('experienceContainer');
+                container.innerHTML = '';
+                data.experience.forEach(exp => {
+                    addExperience();
+                    const items = container.querySelectorAll('.experience-item');
+                    const lastItem = items[items.length - 1];
+                    lastItem.querySelector('.experience-title').value = exp.title || '';
+                    lastItem.querySelector('.experience-company').value = exp.company || '';
+                    lastItem.querySelector('.experience-duration').value = exp.duration || '';
+                    lastItem.querySelector('.experience-location').value = exp.location || '';
+                    lastItem.querySelector('.experience-description').value = exp.description || '';
+                });
+            }
+
+            // Load languages data
+            if (data.languages) {
+                const container = document.getElementById('languagesContainer');
+                container.innerHTML = '';
+                data.languages.forEach(lang => {
+                    addLanguage();
+                    const items = container.querySelectorAll('.language-item');
+                    const lastItem = items[items.length - 1];
+                    lastItem.querySelector('.language-name').value = lang.name || '';
+                    lastItem.querySelector('.language-proficiency').value = lang.proficiency || 'Intermediate';
+                });
+            }
+
+            alert('Resume loaded successfully!');
+            
+            confetti({
+                particleCount: 100,
+                spread: 70,
+                origin: { y: 0.6 }
+            });
+        }
+
+        // Reset form
+        function resetForm() {
+            if (confirm('Are you sure you want to reset the form? All data will be lost.')) {
+                document.querySelectorAll('input, textarea, select').forEach(element => {
+                    element.value = '';
+                });
+                
+                document.getElementById('photoPreview').innerHTML = '<i class="fas fa-user text-gray-400"></i>';
+                croppedImageData = null;
+                
+                // Reset dynamic sections
+                document.getElementById('educationContainer').innerHTML = `
+                    <div class="education-item border border-gray-200 rounded-lg p-4 mb-3">
+                        <div class="grid md:grid-cols-2 gap-3">
+                            <input type="text" placeholder="Degree" class="education-degree w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            <input type="text" placeholder="Institution" class="education-institution w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            <input type="text" placeholder="Year" class="education-year w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            <input type="text" placeholder="Grade/CGPA" class="education-grade w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        </div>
+                        <button onclick="removeEducation(this)" class="mt-2 text-red-500 hover:text-red-700 text-sm">
+                            <i class="fas fa-trash mr-1"></i>Remove
+                        </button>
+                    </div>
+                `;
+                
+                document.getElementById('experienceContainer').innerHTML = `
+                    <div class="experience-item border border-gray-200 rounded-lg p-4 mb-3">
+                        <div class="grid md:grid-cols-2 gap-3 mb-3">
+                            <input type="text" placeholder="Job Title" class="experience-title w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            <input type="text" placeholder="Company" class="experience-company w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            <input type="text" placeholder="Duration" class="experience-duration w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            <input type="text" placeholder="Location" class="experience-location w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        </div>
+                        <textarea placeholder="Job description and achievements..." class="experience-description w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent h-20 resize-none"></textarea>
+                        <button onclick="removeExperience(this)" class="mt-2 text-red-500 hover:text-red-700 text-sm">
+                            <i class="fas fa-trash mr-1"></i>Remove
+                        </button>
+                    </div>
+                `;
+                
+                document.getElementById('languagesContainer').innerHTML = `
+                    <div class="language-item flex gap-3 mb-2">
+                        <input type="text" placeholder="Language" class="language-name flex-1 p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        <select class="language-proficiency p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            <option value="Native">Native</option>
+                            <option value="Fluent">Fluent</option>
+                            <option value="Intermediate">Intermediate</option>
+                            <option value="Basic">Basic</option>
+                        </select>
+                        <button onclick="removeLanguage(this)" class="text-red-500 hover:text-red-700 px-2">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                `;
+                
+                document.getElementById('resumePreview').innerHTML = `
+                    <div class="a4-content">
+                        <div class="text-center text-gray-500 resume-text">
+                            Click "Preview Resume" to see your resume here
+                        </div>
+                    </div>
+                `;
+                
+                alert('Form reset successfully!');
+            }
+        }
+
+        // Share app
+        function shareApp() {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Elite Resume Builder',
+                    text: 'Check out this amazing resume builder for mechanical engineers!',
+                    url: window.location.href
+                });
+            } else {
+                navigator.clipboard.writeText(window.location.href).then(() => {
+                    alert('App link copied to clipboard!');
+                });
+            }
+            
+            confetti({
+                particleCount: 100,
+                spread: 70,
+                origin: { y: 0.6 }
+            });
+        }
+
+        // Initialize with default values
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set default declaration text
+            document.getElementById('declaration').value = 'I hereby declare that all the information provided above is true to the best of my knowledge and belief.';
         });
     </script>
 </body>
